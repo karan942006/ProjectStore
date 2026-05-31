@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProjectStore — Premium Software Marketplace</title>
+<meta name="description" content="India's premium marketplace for ready-made software projects, source code, final year projects, AI projects, web apps, and Android apps.">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--card:#111114;--card2:#18181d;
+  --primary:#7B6EF6;--accent:#00E5FF;
+  --text:#FFFFFF;--muted:#8A8A9A;--border:rgba(255,255,255,0.07);
+  --glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.08);
+  --radius:16px;--radius-sm:10px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.page{display:none;min-height:100vh;animation:fadeIn .35s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;backdrop-filter:blur(24px);
+  background:rgba(8,8,8,0.88);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;}
+.logo{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;letter-spacing:-0.5px;}
+.nav-links{display:flex;gap:2rem;align-items:center;}
+.nav-links a{color:var(--muted);font-size:.875rem;text-decoration:none;cursor:pointer;transition:color .2s;font-weight:500;}
+.nav-links a:hover{color:#fff}
+.nav-cta{background:linear-gradient(135deg,var(--primary),#5847d4);color:#fff;border:none;
+  padding:.55rem 1.3rem;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;font-family:'Inter',sans-serif;}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(123,110,246,.4)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .3s}
+@media(max-width:768px){
+  .nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:#0d0d10;
+    flex-direction:column;padding:1.5rem;gap:1.25rem;border-bottom:1px solid var(--border);z-index:999;}
+  .nav-links.open{display:flex}
+  .hamburger{display:flex}
+  .nav-cta{display:none}
+}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:6rem 1.5rem 4rem;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(123,110,246,.2) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 35% at 85% 55%,rgba(0,229,255,.1) 0%,transparent 60%),
+    radial-gradient(ellipse 30% 25% at 15% 70%,rgba(123,110,246,.07) 0%,transparent 60%);
+  pointer-events:none;}
+.hero-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:70px 70px;pointer-events:none;
+  mask-image:radial-gradient(ellipse 80% 60% at center,black 30%,transparent 80%);}
+.badge{display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(123,110,246,.12);border:1px solid rgba(123,110,246,.3);
+  color:var(--primary);font-size:.73rem;font-weight:700;
+  padding:.4rem 1.1rem;border-radius:100px;margin-bottom:1.75rem;letter-spacing:.8px;text-transform:uppercase;}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,6vw,4.5rem);font-weight:800;
+  line-height:1.08;letter-spacing:-2px;max-width:850px;margin-bottom:1.5rem;}
+.hero h1 span{background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{color:var(--muted);font-size:1.1rem;max-width:520px;line-height:1.75;margin-bottom:2.5rem}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.btn-primary{background:linear-gradient(135deg,var(--primary),#5847d4);color:#fff;border:none;
+  padding:.9rem 2.1rem;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;
+  transition:transform .2s,box-shadow .25s;font-family:'Inter',sans-serif;letter-spacing:-.1px;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(123,110,246,.45)}
+.btn-secondary{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.12);
+  padding:.9rem 2.1rem;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;
+  transition:background .2s,transform .2s;font-family:'Inter',sans-serif;backdrop-filter:blur(8px);}
+.btn-secondary:hover{background:rgba(255,255,255,.11);transform:translateY(-2px)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;margin:3rem auto 0;max-width:720px;width:100%;}
+.stat{background:var(--card);padding:1.35rem;text-align:center;}
+.stat-num{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;
+  background:linear-gradient(135deg,#fff,var(--muted));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:.73rem;color:var(--muted);margin-top:.3rem;font-weight:500;letter-spacing:.3px}
+@media(max-width:540px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+/* FLOATING CARDS */
+.floating-wrap{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:3rem;perspective:800px;}
+.f-card{background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:12px;
+  padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;
+  animation:floatCard 3.5s ease-in-out infinite;width:200px;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.f-card:nth-child(2){animation-delay:1.2s}
+.f-card:nth-child(3){animation-delay:2.4s}
+@keyframes floatCard{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
+.f-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.f-card-info small{color:var(--muted);font-size:.68rem;display:block}
+.f-card-info strong{font-size:.875rem;font-weight:600}
+
+/* SECTIONS */
+.section{padding:5rem 1.5rem;}
+.container{max-width:1100px;margin:0 auto;}
+.section-tag{font-size:.72rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--primary);margin-bottom:.85rem;display:inline-block;}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,4.5vw,3rem);
+  font-weight:800;letter-spacing:-1.2px;line-height:1.12;margin-bottom:.85rem;}
+.section-sub{color:var(--muted);font-size:1rem;max-width:520px;line-height:1.75;}
+.g-text{background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+.view-all{font-size:.82rem;color:var(--primary);cursor:pointer;font-weight:600;border:none;
+  background:none;font-family:'Inter',sans-serif;padding:.4rem .75rem;border-radius:6px;
+  border:1px solid rgba(123,110,246,.25);transition:background .2s;}
+.view-all:hover{background:rgba(123,110,246,.1)}
+
+/* PROJECT CARDS */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;}
+@media(max-width:900px){.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){.grid-3,.grid-2{grid-template-columns:1fr}}
+
+.p-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;transition:transform .25s,border-color .25s,box-shadow .3s;cursor:pointer;
+  display:flex;flex-direction:column;}
+.p-card:hover{transform:translateY(-5px);border-color:rgba(123,110,246,.35);
+  box-shadow:0 24px 48px rgba(0,0,0,.45)}
+.p-thumb{height:165px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;
+  position:relative;overflow:hidden;}
+.p-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.4))}
+.p-body{padding:1.15rem;flex:1;display:flex;flex-direction:column;}
+.p-cat{font-size:.67rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--accent);margin-bottom:.45rem;}
+.p-title{font-family:'Syne',sans-serif;font-size:.975rem;font-weight:700;line-height:1.35;margin-bottom:.5rem;}
+.p-tech{font-size:.73rem;color:var(--muted);margin-bottom:.65rem;display:flex;align-items:center;gap:.35rem;}
+.p-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:.75rem;}
+.p-price{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;}
+.p-actions{display:flex;gap:.45rem;}
+.btn-sm{font-size:.73rem;font-weight:600;padding:.4rem .9rem;border-radius:7px;cursor:pointer;
+  transition:all .2s;font-family:'Inter',sans-serif;border:none;}
+.btn-buy{background:linear-gradient(135deg,var(--primary),#5847d4);color:#fff;}
+.btn-buy:hover{transform:scale(1.06);box-shadow:0 6px 18px rgba(123,110,246,.4)}
+.btn-view{background:var(--glass2);color:var(--muted);border:1px solid var(--border);}
+.btn-view:hover{color:#fff;background:var(--glass)}
+.rating{display:flex;align-items:center;gap:.35rem;margin-bottom:.5rem;}
+.stars{color:#F5A623;font-size:.78rem;}
+.rating-num{font-size:.72rem;color:var(--muted);}
+
+/* TAGS + FILTERS */
+.tag{display:inline-block;font-size:.72rem;font-weight:600;padding:.35rem .8rem;
+  border-radius:100px;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;}
+.tag:hover{border-color:rgba(123,110,246,.4);color:#fff}
+.tag.active{border-color:rgba(123,110,246,.5);color:var(--primary);background:rgba(123,110,246,.1);}
+.filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.75rem;}
+
+/* SEARCH */
+.search-bar{display:flex;gap:.75rem;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.8rem 1.1rem;margin-bottom:1.75rem;transition:border-color .2s;}
+.search-bar:focus-within{border-color:rgba(123,110,246,.5);box-shadow:0 0 0 3px rgba(123,110,246,.08)}
+.search-bar input{background:none;border:none;outline:none;color:#fff;font-size:.95rem;flex:1;font-family:'Inter',sans-serif;}
+.search-bar input::placeholder{color:var(--muted)}
+select.form-control-sm{background:var(--card);border:1px solid var(--border);border-radius:8px;
+  color:#fff;font-family:'Inter',sans-serif;padding:.5rem .9rem;font-size:.82rem;outline:none;cursor:pointer;}
+select.form-control-sm:focus{border-color:rgba(123,110,246,.5)}
+
+/* CATEGORIES */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+@media(max-width:700px){.cat-grid{grid-template-columns:repeat(2,1fr)}}
+.cat-pill{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.35rem;text-align:center;cursor:pointer;transition:all .25s;}
+.cat-pill:hover{border-color:rgba(123,110,246,.4);background:rgba(123,110,246,.06);transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.cat-emoji{font-size:2.2rem;margin-bottom:.6rem;}
+.cat-name{font-size:.875rem;font-weight:700;}
+.cat-count{font-size:.72rem;color:var(--muted);margin-top:.25rem;}
+
+/* TESTIMONIALS */
+.t-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.6rem;}
+.t-stars{color:#F5A623;font-size:.9rem;margin-bottom:.85rem;letter-spacing:1px;}
+.t-text{color:var(--muted);font-size:.875rem;line-height:1.75;margin-bottom:1.1rem;}
+.t-author{display:flex;align-items:center;gap:.8rem;}
+.t-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;}
+.t-name{font-size:.875rem;font-weight:700;}
+.t-role{font-size:.73rem;color:var(--muted);}
+
+/* FAQ */
+.faq-item{border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:.75rem;overflow:hidden;transition:border-color .2s;}
+.faq-item.open{border-color:rgba(123,110,246,.3)}
+.faq-q{padding:1.15rem 1.3rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+  font-weight:500;font-size:.9rem;transition:background .2s;}
+.faq-q:hover{background:var(--glass)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;
+  color:var(--muted);font-size:.875rem;line-height:1.75;padding:0 1.3rem;}
+.faq-a.open{max-height:300px;padding-bottom:1.15rem;}
+.faq-icon{font-size:1.3rem;color:var(--muted);transition:transform .3s;line-height:1;flex-shrink:0;}
+.faq-item.open .faq-icon{transform:rotate(45deg);color:var(--primary)}
+
+/* FORM */
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:2.5rem;max-width:700px;margin:0 auto;}
+.form-group{margin-bottom:1.25rem;}
+.form-group label{display:block;font-size:.73rem;font-weight:700;color:var(--muted);
+  margin-bottom:.5rem;letter-spacing:.5px;text-transform:uppercase;}
+.form-control{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:.8rem 1.05rem;color:#fff;font-size:.95rem;
+  font-family:'Inter',sans-serif;outline:none;transition:border-color .2s,background .2s;}
+.form-control:focus{border-color:rgba(123,110,246,.55);background:rgba(123,110,246,.04)}
+.form-control::placeholder{color:var(--muted)}
+textarea.form-control{resize:vertical;min-height:120px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:540px){.form-row{grid-template-columns:1fr}}
+
+/* DETAIL */
+.detail-grid{display:grid;grid-template-columns:1fr 390px;gap:2.25rem;align-items:start;}
+@media(max-width:920px){.detail-grid{grid-template-columns:1fr}}
+.detail-img{height:290px;border-radius:var(--radius);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:7rem;margin-bottom:1.75rem;}
+.tabs{display:flex;gap:.4rem;margin-bottom:1.75rem;border-bottom:1px solid var(--border);padding-bottom:.6rem;}
+.tab-btn{padding:.5rem 1.1rem;border-radius:8px;border:none;background:none;color:var(--muted);
+  font-size:.875rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.tab-btn.active{background:rgba(123,110,246,.15);color:var(--primary)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:.65rem;}
+.feature-list li{display:flex;align-items:flex-start;gap:.7rem;font-size:.9rem;color:var(--muted);}
+.feature-list li::before{content:'✦';color:var(--accent);font-size:.55rem;flex-shrink:0;margin-top:5px;}
+.buy-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.85rem;position:sticky;top:80px;}
+.big-price{font-family:'Syne',sans-serif;font-size:2.75rem;font-weight:800;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.divider{height:1px;background:var(--border);margin:1.35rem 0;}
+.trust-items{display:flex;flex-direction:column;gap:.65rem;}
+.trust-item{display:flex;align-items:center;gap:.65rem;font-size:.82rem;color:var(--muted);}
+.tech-badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem;}
+.t-badge{font-size:.72rem;font-weight:600;padding:.3rem .8rem;border-radius:100px;
+  background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.25);color:var(--primary);}
+
+/* ABOUT PROCESS */
+.process-step{display:flex;gap:1.35rem;margin-bottom:2.25rem;align-items:flex-start;}
+.step-num{width:46px;height:46px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--primary),#5847d4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;}
+.step-body h4{font-weight:700;margin-bottom:.4rem;font-size:.95rem;}
+.step-body p{color:var(--muted);font-size:.875rem;line-height:1.7;}
+
+/* CONTACT */
+.contact-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.85rem;display:flex;align-items:flex-start;gap:1.1rem;transition:border-color .25s;}
+.contact-card:hover{border-color:rgba(123,110,246,.3)}
+.contact-icon{font-size:2rem;flex-shrink:0;}
+
+/* WHATSAPP FLOAT */
+.wa-float{position:fixed;bottom:1.75rem;right:1.75rem;z-index:999;
+  width:56px;height:56px;border-radius:50%;background:#25D366;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(37,211,102,.45);cursor:pointer;font-size:1.6rem;
+  transition:transform .2s;border:none;animation:waPulse 2.8s ease-in-out infinite;}
+.wa-float:hover{transform:scale(1.12)}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 24px rgba(37,211,102,.45)}
+  50%{box-shadow:0 4px 40px rgba(37,211,102,.75),0 0 0 8px rgba(37,211,102,.08)}}
+.wa-label{position:absolute;right:66px;background:#25D366;color:#fff;font-size:.75rem;
+  font-weight:700;padding:.35rem .85rem;border-radius:100px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .2s;}
+.wa-float:hover .wa-label{opacity:1}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:2000;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--card2);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);
+  padding:2.75rem;max-width:440px;width:92%;text-align:center;
+  transform:scale(.93) translateY(10px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);}
+.modal-overlay.open .modal{transform:scale(1) translateY(0)}
+.modal-icon{font-size:4rem;margin-bottom:1rem;}
+.modal h2{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:.6rem;}
+.modal p{color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:1.75rem;}
+.modal-btns{display:flex;flex-direction:column;gap:.75rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:5.5rem;right:1.75rem;z-index:3000;
+  background:#1a1a1f;border:1px solid rgba(0,229,255,.25);border-radius:var(--radius-sm);
+  padding:1rem 1.35rem;display:flex;align-items:center;gap:.8rem;max-width:310px;
+  transform:translateX(130%);transition:transform .4s cubic-bezier(.32,.72,0,1);}
+.toast.show{transform:translateX(0)}
+.toast-icon{font-size:1.2rem;}
+.toast-text{font-size:.85rem;font-weight:500;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:var(--card);}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem;}
+@media(max-width:700px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:440px){.footer-grid{grid-template-columns:1fr}}
+.footer-brand{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.8rem;}
+.footer-desc{color:var(--muted);font-size:.82rem;line-height:1.75;}
+.footer-col h4{font-size:.72rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:.9rem;}
+.footer-col a{display:block;color:var(--muted);font-size:.82rem;margin-bottom:.55rem;
+  cursor:pointer;text-decoration:none;transition:color .2s;}
+.footer-col a:hover{color:#fff}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.35rem;display:flex;
+  justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;}
+.footer-copy{font-size:.78rem;color:var(--muted);}
+
+/* PAGINATION */
+.pagination{display:flex;gap:.5rem;justify-content:center;margin-top:2.75rem;}
+.pg-btn{width:38px;height:38px;border-radius:8px;border:1px solid var(--border);
+  background:none;color:var(--muted);cursor:pointer;font-size:.875rem;
+  font-family:'Inter',sans-serif;transition:all .2s;}
+.pg-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.pg-btn:hover:not(.active){background:var(--glass2);color:#fff;}
+
+/* BREADCRUMB */
+.breadcrumb{display:flex;gap:.5rem;align-items:center;font-size:.8rem;color:var(--muted);margin-bottom:1.75rem;}
+.breadcrumb span{cursor:pointer;transition:color .2s;}
+.breadcrumb span:hover{color:#fff}
+.breadcrumb .sep{color:rgba(255,255,255,.15);font-size:.7rem;}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.in{opacity:1;transform:translateY(0)}
+.reveal-d1{transition-delay:.1s}.reveal-d2{transition-delay:.2s}.reveal-d3{transition-delay:.3s}
+
+/* PROGRESS BAR */
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--primary),var(--accent));
+  z-index:2000;transition:width .1s;}
+
+/* CODE BLOCK */
+.code-block{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:1.35rem;font-family:'Courier New',monospace;font-size:.82rem;color:var(--accent);line-height:1.9;overflow-x:auto;}
+.code-comment{color:var(--muted);}
+
+@media(max-width:480px){
+  .hero h1{font-size:2.1rem;letter-spacing:-1px}
+  .form-card{padding:1.5rem}
+  nav{padding:0 1rem}
+  .detail-grid{gap:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('home')">ProjectStore</div>
+  <div class="nav-links" id="navLinks">
+    <a onclick="showPage('projects')">Projects</a>
+    <a onclick="showPage('custom')">Custom Project</a>
+    <a onclick="showPage('about')">About</a>
+    <a onclick="showPage('contact')">Contact</a>
+  </div>
+  <button class="nav-cta" onclick="showPage('projects')">Browse Projects</button>
+  <button class="hamburger" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- WHATSAPP BUTTON -->
+<button class="wa-float" onclick="openWhatsApp('')" aria-label="Chat on WhatsApp">
+  <span class="wa-label">Chat with us</span>💬
+</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast" role="alert" aria-live="polite">
+  <span class="toast-icon" id="toastIcon">✅</span>
+  <span class="toast-text" id="toastText">Done!</span>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="modalOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">🎉</div>
+    <h2 id="modalTitle">Success!</h2>
+    <p id="modalDesc">Your action was completed successfully.</p>
+    <div class="modal-btns">
+      <button class="btn-primary" id="modalBtn1" onclick="closeModal()">Continue</button>
+      <button class="btn-secondary" id="modalBtn2" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     HOME PAGE
+     ====================================================== -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="badge">⚡ 500+ Premium Projects · Instant Download</div>
+    <h1>Premium <span>Ready-Made Projects</span><br>for Students &amp; Developers</h1>
+    <p>Buy instantly, download immediately, and get expert support. From final year projects to production-grade SaaS apps — all in one place.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showPage('projects')">🚀 Browse Projects</button>
+      <button class="btn-secondary" onclick="showPage('custom')">✨ Request Custom Project</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num" data-count="500" data-suffix="+">0</div><div class="stat-label">Projects Sold</div></div>
+      <div class="stat"><div class="stat-num" data-count="2000" data-suffix="+">0</div><div class="stat-label">Happy Clients</div></div>
+      <div class="stat"><div class="stat-num" data-count="50" data-suffix="+">0</div><div class="stat-label">Categories</div></div>
+      <div class="stat"><div class="stat-num" data-count="24" data-suffix="/7">0</div><div class="stat-label">Support</div></div>
+    </div>
+    <div class="floating-wrap">
+      <div class="f-card"><div class="f-icon" style="background:rgba(123,110,246,.18)">🤖</div><div class="f-card-info"><small>AI Project</small><strong>ChatBot SaaS</strong></div></div>
+      <div class="f-card"><div class="f-icon" style="background:rgba(0,229,255,.15)">🛒</div><div class="f-card-info"><small>Web App</small><strong>E-Commerce</strong></div></div>
+      <div class="f-card"><div class="f-icon" style="background:rgba(245,166,35,.15)">📱</div><div class="f-card-info"><small>Android</small><strong>Food Delivery</strong></div></div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="section" style="padding-top:1.5rem">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div>
+          <div class="section-tag">Browse by Category</div>
+          <div class="section-title">Find Your <span class="g-text">Perfect Project</span></div>
+        </div>
+        <button class="view-all" onclick="showPage('projects')">View All →</button>
+      </div>
+      <div class="cat-grid reveal reveal-d1">
+        <div class="cat-pill" onclick="filterAndGo('AI')"><div class="cat-emoji">🤖</div><div class="cat-name">AI Projects</div><div class="cat-count">45 projects</div></div>
+        <div class="cat-pill" onclick="filterAndGo('Web')"><div class="cat-emoji">🌐</div><div class="cat-name">Web Apps</div><div class="cat-count">120 projects</div></div>
+        <div class="cat-pill" onclick="filterAndGo('Android')"><div class="cat-emoji">📱</div><div class="cat-name">Android Apps</div><div class="cat-count">60 projects</div></div>
+        <div class="cat-pill" onclick="filterAndGo('Python')"><div class="cat-emoji">🐍</div><div class="cat-name">Python Projects</div><div class="cat-count">80 projects</div></div>
+        <div class="cat-pill" onclick="filterAndGo('Java')"><div class="cat-emoji">☕</div><div class="cat-name">Java Projects</div><div class="cat-count">55 projects</div></div>
+        <div class="cat-pill" onclick="filterAndGo('Final Year')"><div class="cat-emoji">🎓</div><div class="cat-name">Final Year</div><div class="cat-count">90 projects</div></div>
+        <div class="cat-pill" onclick="filterAndGo('React')"><div class="cat-emoji">⚛️</div><div class="cat-name">React Apps</div><div class="cat-count">40 projects</div></div>
+        <div class="cat-pill" onclick="showPage('custom')"><div class="cat-emoji">🛠️</div><div class="cat-name">Custom Built</div><div class="cat-count">On Request</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PROJECTS -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div>
+          <div class="section-tag">Featured Projects</div>
+          <div class="section-title">Bestselling <span class="g-text">Source Code</span></div>
+        </div>
+        <button class="view-all" onclick="showPage('projects')">View All →</button>
+      </div>
+      <div class="grid-3 reveal reveal-d1" id="featuredGrid"></div>
+    </div>
+  </section>
+
+  <!-- TRUST BANNER -->
+  <section style="padding:0 1.5rem 2rem">
+    <div class="container">
+      <div style="background:linear-gradient(135deg,rgba(123,110,246,.12),rgba(0,229,255,.06));
+        border:1px solid rgba(123,110,246,.2);border-radius:var(--radius);padding:2rem;
+        display:flex;flex-wrap:wrap;gap:2rem;justify-content:space-around;align-items:center" class="reveal">
+        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem">⚡</div><div style="font-weight:700;font-size:.875rem">Instant Download</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">After payment</div></div>
+        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem">🔒</div><div style="font-weight:700;font-size:.875rem">Secure Payment</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">Razorpay verified</div></div>
+        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem">💬</div><div style="font-weight:700;font-size:.875rem">WhatsApp Support</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">30 days free</div></div>
+        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem">📄</div><div style="font-weight:700;font-size:.875rem">Full Documentation</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">Every project</div></div>
+        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem">♾️</div><div style="font-weight:700;font-size:.875rem">Commercial License</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">Personal + commercial</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" style="background:rgba(255,255,255,.018);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:2.75rem" class="reveal">
+        <div class="section-tag">Customer Reviews</div>
+        <div class="section-title">Trusted by <span class="g-text">Developers Worldwide</span></div>
+      </div>
+      <div class="grid-3 reveal reveal-d1">
+        <div class="t-card"><div class="t-stars">★★★★★</div><div class="t-text">"Bought the E-Commerce source code. Worked perfectly out of the box. Documentation is excellent and WhatsApp support was instant. 100% recommended!"</div><div class="t-author"><div class="t-avatar" style="background:rgba(123,110,246,.2);color:var(--primary)">RK</div><div><div class="t-name">Rahul Kumar</div><div class="t-role">Full Stack Developer, Bangalore</div></div></div></div>
+        <div class="t-card"><div class="t-stars">★★★★★</div><div class="t-text">"Got my final year project submitted successfully. The AI Face Recognition project was exactly what I needed — clean code, great docs, and fast support!"</div><div class="t-author"><div class="t-avatar" style="background:rgba(0,229,255,.15);color:var(--accent)">PS</div><div><div class="t-name">Priya Singh</div><div class="t-role">CS Student, VIT Vellore</div></div></div></div>
+        <div class="t-card"><div class="t-stars">★★★★★</div><div class="t-text">"The custom project request was handled professionally. Got a full Android food delivery app in 4 days at a great price. Will order again!"</div><div class="t-author"><div class="t-avatar" style="background:rgba(245,166,35,.15);color:#F5A623">AM</div><div><div class="t-name">Arjun Mehta</div><div class="t-role">Android Developer, Mumbai</div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:2.75rem" class="reveal">
+        <div class="section-tag">FAQ</div>
+        <div class="section-title">Frequently Asked <span class="g-text">Questions</span></div>
+      </div>
+      <div style="max-width:700px;margin:0 auto" class="reveal reveal-d1">
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Do I get the full source code?</span><span class="faq-icon">+</span></div><div class="faq-a">Yes! Every project includes 100% complete, well-commented source code. You own it forever and can modify it however you need. No encrypted or obfuscated files — just clean, readable code.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How fast do I get my project after payment?</span><span class="faq-icon">+</span></div><div class="faq-a">Delivery is instant! After successful payment via Razorpay you get immediate access to download your project. A download link is also sent to your email within 2 minutes.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Do you provide support after purchase?</span><span class="faq-icon">+</span></div><div class="faq-a">Absolutely. We provide free WhatsApp support for 30 days after purchase to help with setup, bugs, environment configuration, and basic customization questions.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Can I use the project commercially?</span><span class="faq-icon">+</span></div><div class="faq-a">Yes! All projects come with a personal + commercial license. You can use them in client projects, deploy them commercially, and modify them freely. Reselling the source code as-is is not permitted.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What payment methods do you accept?</span><span class="faq-icon">+</span></div><div class="faq-a">We use Razorpay which supports UPI (PhonePe, GPay, Paytm), credit/debit cards, net banking, digital wallets, and EMI options. All payments are 100% secure.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if the project doesn't work as described?</span><span class="faq-icon">+</span></div><div class="faq-a">We offer a refund if the project is fundamentally different from its description or completely non-functional after our support team's assistance. Contact us within 7 days of purchase.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA SECTION -->
+  <section class="section" style="padding-top:0;padding-bottom:4rem">
+    <div class="container reveal">
+      <div style="background:linear-gradient(135deg,rgba(123,110,246,.15),rgba(0,229,255,.08));
+        border:1px solid rgba(123,110,246,.25);border-radius:var(--radius);
+        padding:3.5rem 2.5rem;text-align:center;">
+        <div class="section-tag">Get Started Today</div>
+        <div class="section-title">Can't find what you need?</div>
+        <p style="color:var(--muted);max-width:480px;margin:.75rem auto 2rem;line-height:1.75">Our expert developers build custom projects tailored to your exact requirements within your budget and deadline.</p>
+        <div class="hero-btns" style="justify-content:center">
+          <button class="btn-primary" onclick="showPage('custom')">🛠️ Request Custom Project</button>
+          <button class="btn-secondary" onclick="openWhatsApp('Hello ProjectStore, I need a custom project built.')">💬 Chat with Expert</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================================================
+     PROJECTS PAGE
+     ====================================================== -->
+<div class="page" id="page-projects">
+  <section class="section" style="padding-top:5.5rem">
+    <div class="container">
+      <div class="section-tag">Marketplace</div>
+      <div class="section-title" style="margin-bottom:1.75rem">Browse All <span class="g-text">Projects</span></div>
+      <div class="search-bar">
+        <span style="color:var(--muted);font-size:1.1rem">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search projects, technologies, categories..." oninput="filterProjects()" aria-label="Search projects">
+      </div>
+      <div class="filters" id="filterTags">
+        <span class="tag active" onclick="setFilter('')">All</span>
+        <span class="tag" onclick="setFilter('AI')">🤖 AI</span>
+        <span class="tag" onclick="setFilter('Web')">🌐 Web Apps</span>
+        <span class="tag" onclick="setFilter('Android')">📱 Android</span>
+        <span class="tag" onclick="setFilter('Python')">🐍 Python</span>
+        <span class="tag" onclick="setFilter('Java')">☕ Java</span>
+        <span class="tag" onclick="setFilter('Final Year')">🎓 Final Year</span>
+        <span class="tag" onclick="setFilter('React')">⚛️ React</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem">
+        <span style="font-size:.82rem;color:var(--muted)" id="resultCount">Showing 20 projects</span>
+        <select class="form-control-sm" onchange="sortProjects(this.value)" aria-label="Sort projects">
+          <option value="default">Sort: Default</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Top Rated</option>
+          <option value="newest">Newest First</option>
+        </select>
+      </div>
+      <div class="grid-3" id="projectsGrid"></div>
+      <div class="pagination">
+        <button class="pg-btn active">1</button>
+        <button class="pg-btn">2</button>
+        <button class="pg-btn">3</button>
+        <button class="pg-btn" style="width:auto;padding:0 .9rem">›</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================================================
+     PROJECT DETAIL PAGE
+     ====================================================== -->
+<div class="page" id="page-detail">
+  <section class="section" style="padding-top:5.5rem">
+    <div class="container">
+      <div class="breadcrumb">
+        <span onclick="showPage('home')">Home</span>
+        <span class="sep">›</span>
+        <span onclick="showPage('projects')">Projects</span>
+        <span class="sep">›</span>
+        <span id="detailBreadcrumb" style="color:#fff">Project</span>
+      </div>
+      <div class="detail-grid" id="detailContent"></div>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <div class="section-tag">Related Projects</div>
+          <div class="section-title">You May Also <span class="g-text">Like</span></div>
+        </div>
+        <button class="view-all" onclick="showPage('projects')">See All →</button>
+      </div>
+      <div class="grid-3" id="relatedGrid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================================================
+     CUSTOM PROJECT PAGE
+     ====================================================== -->
+<div class="page" id="page-custom">
+  <section class="section" style="padding-top:5.5rem">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:3rem">
+        <div class="section-tag">Custom Development</div>
+        <div class="section-title">Request a <span class="g-text">Custom Project</span></div>
+        <p style="color:var(--muted);max-width:520px;margin:1rem auto;line-height:1.75">Tell us what you need. Our expert developers will build it within your budget and deadline — guaranteed quality, full source code, and WhatsApp support.</p>
+        <div style="display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem">
+          <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted)"><span style="color:var(--accent)">✓</span> Free Consultation</div>
+          <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted)"><span style="color:var(--accent)">✓</span> Fixed Price Quote</div>
+          <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted)"><span style="color:var(--accent)">✓</span> On-time Delivery</div>
+          <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted)"><span style="color:var(--accent)">✓</span> Free Revisions</div>
+        </div>
+      </div>
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" class="form-control" id="cf-name" placeholder="Rahul Kumar" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" class="form-control" id="cf-email" placeholder="you@example.com" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="tel" class="form-control" id="cf-wa" placeholder="+91 98765 43210">
+          </div>
+          <div class="form-group">
+            <label>Project Title *</label>
+            <input type="text" class="form-control" id="cf-title" placeholder="E-Commerce App with AI Recommendations">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Technology Stack</label>
+            <select class="form-control" id="cf-tech">
+              <option>React + Node.js</option>
+              <option>Next.js + Prisma + PostgreSQL</option>
+              <option>Python + Django + REST API</option>
+              <option>Python + FastAPI + AI/ML</option>
+              <option>Java + Spring Boot + MySQL</option>
+              <option>Android (Kotlin) + Firebase</option>
+              <option>Flutter (iOS + Android)</option>
+              <option>MERN Stack</option>
+              <option>PHP + Laravel</option>
+              <option>Other / Discuss</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Budget Range (INR)</label>
+            <select class="form-control" id="cf-budget">
+              <option>₹1,000 – ₹3,000</option>
+              <option>₹3,000 – ₹7,000</option>
+              <option>₹7,000 – ₹15,000</option>
+              <option>₹15,000 – ₹30,000</option>
+              <option>₹30,000 – ₹60,000</option>
+              <option>₹60,000+</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Deadline</label>
+            <input type="date" class="form-control" id="cf-deadline">
+          </div>
+          <div class="form-group">
+            <label>Urgency Level</label>
+            <select class="form-control" id="cf-priority">
+              <option>Normal (7–14 days)</option>
+              <option>Urgent (3–5 days) +20%</option>
+              <option>Rush (1–2 days) +50%</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Project Description *</label>
+          <textarea class="form-control" id="cf-desc" placeholder="Describe your project in detail. Include: number of pages/screens, key features, database needs, third-party APIs, user roles, design style, and anything else important..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>How did you find us?</label>
+          <select class="form-control" id="cf-source">
+            <option>Google Search</option>
+            <option>Instagram</option>
+            <option>WhatsApp</option>
+            <option>Friend Referral</option>
+            <option>YouTube</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <button class="btn-primary" style="width:100%;padding:1.1rem;font-size:1rem;margin-top:.75rem;letter-spacing:-.2px" onclick="submitCustomForm()">
+          🚀 Submit Request — Get Free Quote on WhatsApp
+        </button>
+        <p style="text-align:center;font-size:.78rem;color:var(--muted);margin-top:1rem">We respond within 2 hours on WhatsApp · No payment until you approve the quote</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================================================
+     ABOUT PAGE
+     ====================================================== -->
+<div class="page" id="page-about">
+  <section class="section" style="padding-top:5.5rem">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:3.5rem" class="reveal">
+        <div class="section-tag">About Us</div>
+        <div class="section-title">Building the Future of <span class="g-text">Code Commerce</span></div>
+        <p style="color:var(--muted);max-width:580px;margin:1rem auto;line-height:1.75">ProjectStore is India's leading marketplace for premium software projects. We help students ace final year deadlines and developers ship production-grade products faster.</p>
+      </div>
+
+      <div class="grid-2 reveal" style="margin-bottom:3rem">
+        <div class="p-card" style="padding:2.25rem">
+          <div style="font-size:2.5rem;margin-bottom:1.1rem">🎯</div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.85rem">Our Mission</h3>
+          <p style="color:var(--muted);font-size:.9rem;line-height:1.75">To democratize software development by providing affordable, high-quality source code that empowers students to learn and developers to build faster without reinventing the wheel.</p>
+        </div>
+        <div class="p-card" style="padding:2.25rem">
+          <div style="font-size:2.5rem;margin-bottom:1.1rem">💡</div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.85rem">What We Offer</h3>
+          <p style="color:var(--muted);font-size:.9rem;line-height:1.75">500+ production-ready projects across AI/ML, Web Development, Android, Python, Java, and more — plus custom development services where our senior developers build exactly what you envision.</p>
+        </div>
+        <div class="p-card" style="padding:2.25rem">
+          <div style="font-size:2.5rem;margin-bottom:1.1rem">🏆</div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.85rem">Our Standards</h3>
+          <p style="color:var(--muted);font-size:.9rem;line-height:1.75">Every project is reviewed by senior engineers before listing. We ensure clean code architecture, comprehensive documentation, and working demos for all projects.</p>
+        </div>
+        <div class="p-card" style="padding:2.25rem">
+          <div style="font-size:2.5rem;margin-bottom:1.1rem">🌍</div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.85rem">Our Community</h3>
+          <p style="color:var(--muted);font-size:.9rem;line-height:1.75">Trusted by 2000+ students and developers across India, the US, UAE, UK, and 30+ other countries. Our WhatsApp community has 5000+ active members sharing tips and resources.</p>
+        </div>
+      </div>
+
+      <div class="reveal" style="margin-bottom:1.5rem">
+        <div class="section-tag">How It Works</div>
+        <div class="section-title" style="margin-bottom:2rem">Our Simple <span class="g-text">Process</span></div>
+        <div style="max-width:620px">
+          <div class="process-step"><div class="step-num">1</div><div class="step-body"><h4>Browse &amp; Discover</h4><p>Explore 500+ projects with detailed previews, tech stack info, screenshots, and live demo links. Filter by category, technology, or budget.</p></div></div>
+          <div class="process-step"><div class="step-num">2</div><div class="step-body"><h4>Pay Securely via Razorpay</h4><p>Complete payment using UPI, credit/debit card, net banking, or wallet. Transaction is encrypted and fully secure. Receipt is emailed instantly.</p></div></div>
+          <div class="process-step"><div class="step-num">3</div><div class="step-body"><h4>Instant Download</h4><p>Access your complete project immediately — source code, database scripts, documentation, and setup guide — all in a single ZIP file.</p></div></div>
+          <div class="process-step"><div class="step-num">4</div><div class="step-body"><h4>30-Day WhatsApp Support</h4><p>Our expert team helps you with setup, configuration, bug fixes, and customization via WhatsApp for 30 days after purchase.</p></div></div>
+        </div>
+      </div>
+
+      <div class="reveal" style="margin-top:3rem">
+        <div class="section-tag">Technologies</div>
+        <div class="section-title" style="margin-bottom:1.5rem">We Work With <span class="g-text">Everything</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:.6rem">
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">React</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Next.js</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Node.js</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Python</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Django</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">FastAPI</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Java</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Spring Boot</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Kotlin</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Flutter</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">TensorFlow</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">PyTorch</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">OpenCV</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">MySQL</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">PostgreSQL</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">MongoDB</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Firebase</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Supabase</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Prisma</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Solidity</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Tailwind CSS</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">GraphQL</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================================================
+     CONTACT PAGE
+     ====================================================== -->
+<div class="page" id="page-contact">
+  <section class="section" style="padding-top:5.5rem">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:3rem" class="reveal">
+        <div class="section-tag">Get In Touch</div>
+        <div class="section-title">We're Here to <span class="g-text">Help You</span></div>
+        <p style="color:var(--muted);max-width:450px;margin:1rem auto;line-height:1.75">Reach out via WhatsApp for the fastest response. Our team is available 6 days a week.</p>
+      </div>
+      <div class="grid-2 reveal" style="margin-bottom:2.75rem">
+        <div class="contact-card">
+          <div class="contact-icon">💬</div>
+          <div>
+            <h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">WhatsApp Support</h4>
+            <p style="color:var(--muted);font-size:.875rem;line-height:1.65">Chat with us directly for instant help with projects, customization requests, or order support.</p>
+            <p style="font-size:.82rem;color:var(--muted);margin-top:.6rem">⏱ Usually replies in &lt; 15 minutes</p>
+            <button class="btn-primary" style="margin-top:1rem;padding:.65rem 1.35rem;font-size:.875rem" onclick="openWhatsApp('Hello ProjectStore! I need assistance with a project.')">Open WhatsApp Chat</button>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">📧</div>
+          <div>
+            <h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">Email Support</h4>
+            <p style="color:var(--muted);font-size:.875rem;line-height:1.65">For detailed inquiries, bug reports, or refund requests. We respond within 4 business hours.</p>
+            <p style="color:var(--accent);font-size:.9rem;margin-top:.85rem;font-weight:600">support@projectstore.in</p>
+            <p style="font-size:.78rem;color:var(--muted);margin-top:.25rem">legal@projectstore.in · billing@projectstore.in</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">🕐</div>
+          <div>
+            <h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">Business Hours (IST)</h4>
+            <div style="display:flex;flex-direction:column;gap:.4rem;margin-top:.6rem">
+              <div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:var(--muted)">Mon – Fri</span><span style="font-weight:600">9:00 AM – 8:00 PM</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:var(--muted)">Saturday</span><span style="font-weight:600">10:00 AM – 6:00 PM</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:var(--muted)">Sunday</span><span style="font-weight:600">Closed (WhatsApp only)</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">📍</div>
+          <div>
+            <h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">About Our Team</h4>
+            <p style="color:var(--muted);font-size:.875rem;line-height:1.65">Based in India with developers in Bangalore, Mumbai, and Hyderabad. We serve students and developers globally across 30+ countries.</p>
+            <p style="font-size:.82rem;color:var(--primary);margin-top:.75rem;font-weight:600">🇮🇳 Proudly Made in India</p>
+          </div>
+        </div>
+      </div>
+      <div class="form-card reveal reveal-d1" style="max-width:600px">
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;margin-bottom:1.75rem">Send a Message</h3>
+        <div class="form-row">
+          <div class="form-group"><label>Your Name</label><input type="text" class="form-control" id="cnt-name" placeholder="Rahul Kumar"></div>
+          <div class="form-group"><label>Email</label><input type="email" class="form-control" id="cnt-email" placeholder="you@example.com"></div>
+        </div>
+        <div class="form-group"><label>Subject</label>
+          <select class="form-control" id="cnt-subject">
+            <option>Project Inquiry</option>
+            <option>Technical Support</option>
+            <option>Refund Request</option>
+            <option>Custom Project Quote</option>
+            <option>Partnership</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Message</label><textarea class="form-control" id="cnt-msg" placeholder="Tell us how we can help..."></textarea></div>
+        <button class="btn-primary" style="width:100%;padding:.95rem;font-size:.95rem" onclick="submitContact()">Send Message</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================================================
+     TERMS PAGE
+     ====================================================== -->
+<div class="page" id="page-terms">
+  <section class="section" style="padding-top:5.5rem">
+    <div class="container" style="max-width:780px">
+      <div class="section-tag">Legal</div>
+      <h1 style="font-family:'Syne',sans-serif;font-size:2.75rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-1.5px">Terms of Service</h1>
+      <p style="color:var(--muted);font-size:.82rem;margin-bottom:3rem">Last updated: December 2024</p>
+      <div style="display:flex;flex-direction:column;gap:2rem">
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">1. Acceptance of Terms</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">By accessing or using ProjectStore ("the Site"), you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree, please do not use our services.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">2. License &amp; Usage Rights</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">Upon purchase, you receive a non-exclusive, perpetual, worldwide license to use, modify, and deploy the source code in personal and commercial projects. You may NOT: resell the original source code without significant modification, redistribute or give it away, claim original authorship, or use it to create a competing marketplace.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">3. Payments &amp; Refund Policy</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">All payments are processed securely via Razorpay. Due to the digital and instantly downloadable nature of our products, refunds are only issued if: (a) the project is fundamentally different from its description, or (b) the project is completely non-functional after our support team's assistance. Refund requests must be submitted within 7 days of purchase.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">4. Intellectual Property</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">ProjectStore and its suppliers retain all intellectual property rights to the projects listed in the marketplace. Your purchase grants a usage license only. The "ProjectStore" brand, logo, and website design are protected trademarks.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">5. Disclaimer of Warranties</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">Projects are provided "as is" without warranty of any kind. While we strive for quality, we do not guarantee that projects will be error-free or meet every specific requirement without customization.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">6. Limitation of Liability</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">ProjectStore's maximum liability for any claim is limited to the amount paid for the specific product. We are not liable for indirect, consequential, or incidental damages arising from project usage.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">7. Governing Law</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">These Terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Bangalore, Karnataka, India.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">8. Contact</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">For legal inquiries: legal@projectstore.in</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================================================
+     PRIVACY PAGE
+     ====================================================== -->
+<div class="page" id="page-privacy">
+  <section class="section" style="padding-top:5.5rem">
+    <div class="container" style="max-width:780px">
+      <div class="section-tag">Legal</div>
+      <h1 style="font-family:'Syne',sans-serif;font-size:2.75rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-1.5px">Privacy Policy</h1>
+      <p style="color:var(--muted);font-size:.82rem;margin-bottom:3rem">Last updated: December 2024 · Compliant with DPDP Act 2023 (India)</p>
+      <div style="display:flex;flex-direction:column;gap:2rem">
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">1. Information We Collect</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">We collect: name, email address, phone number, and payment transaction IDs when you purchase or contact us. We also collect usage analytics (pages visited, time on site) to improve our platform. We do NOT collect payment card numbers — these are handled entirely by Razorpay.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">2. How We Use Your Information</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">Your information is used to: process and deliver orders, provide customer support, send order confirmation and download emails, respond to inquiries, and improve our services. We never sell, rent, or share personal data with third parties for marketing purposes.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">3. Payment Security</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">All payments are processed by Razorpay, a PCI-DSS Level 1 certified payment gateway. We never store, process, or transmit credit card numbers, CVVs, or net banking credentials on our servers.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">4. Data Retention</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">We retain purchase records for 7 years as required by Indian tax law. Support conversation data is retained for 2 years. You may request deletion of non-legally-required data at any time.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">5. Cookies</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">We use essential cookies for session management and optional analytics cookies (Google Analytics) to understand traffic patterns. You can disable non-essential cookies in your browser without affecting core functionality.</p></div>
+        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">6. Your Rights (DPDP Act 2023)</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">You have the right to: access your personal data, correct inaccurate data, request deletion of your data, withdraw consent, and nominate someone to exercise these rights. Submit requests to: privacy@projectstore.in</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">ProjectStore</div>
+        <div class="footer-desc">India's premium marketplace for ready-made software projects. Buy instantly, download immediately, get expert support.</div>
+        <div style="display:flex;gap:1rem;margin-top:1.35rem;flex-wrap:wrap">
+          <span style="color:var(--muted);font-size:.8rem;cursor:pointer;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color=''" onclick="openWhatsApp('')">💬 +91 98765 43210</span>
+          <span style="color:var(--muted);font-size:.8rem">📧 support@projectstore.in</span>
+        </div>
+        <div style="display:flex;gap:.75rem;margin-top:1.25rem">
+          <span style="background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:7px;padding:.4rem .7rem;font-size:.75rem;color:var(--muted);cursor:pointer">Instagram</span>
+          <span style="background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:7px;padding:.4rem .7rem;font-size:.75rem;color:var(--muted);cursor:pointer">YouTube</span>
+          <span style="background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:7px;padding:.4rem .7rem;font-size:.75rem;color:var(--muted);cursor:pointer">LinkedIn</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Marketplace</h4>
+        <a onclick="showPage('projects')">All Projects</a>
+        <a onclick="filterAndGo('AI')">AI Projects</a>
+        <a onclick="filterAndGo('Web')">Web Apps</a>
+        <a onclick="filterAndGo('Android')">Android Apps</a>
+        <a onclick="filterAndGo('Python')">Python Projects</a>
+        <a onclick="showPage('custom')">Custom Project</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a onclick="showPage('about')">About Us</a>
+        <a onclick="showPage('contact')">Contact Us</a>
+        <a onclick="showPage('terms')">Terms of Service</a>
+        <a onclick="showPage('privacy')">Privacy Policy</a>
+        <a>Affiliate Program</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a onclick="openWhatsApp('Hello, I need support.')">WhatsApp Chat</a>
+        <a>Email Support</a>
+        <a>Documentation</a>
+        <a>Refund Policy</a>
+        <a>Track Order</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2024 ProjectStore. All rights reserved. 🇮🇳 Made in India with ❤️</div>
+      <div style="display:flex;gap:1.25rem;align-items:center">
+        <span style="font-size:.78rem;color:var(--muted);cursor:pointer" onclick="showPage('terms')">Terms</span>
+        <span style="font-size:.78rem;color:var(--muted);cursor:pointer" onclick="showPage('privacy')">Privacy</span>
+        <img src="https://razorpay.com/favicon.ico" alt="Razorpay" style="height:14px;opacity:.5" onerror="this.style.display='none'">
+        <span style="font-size:.75rem;color:var(--muted)">Secured by Razorpay</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== DATA =====
+const PROJECTS = [
+  {id:1,slug:'ai-chatbot-saas',title:'AI Chatbot SaaS Platform',price:1999,origPrice:3999,category:'AI',technology:'Python + FastAPI + React + OpenAI',description:'Full-stack AI chatbot SaaS with GPT-4 integration, multi-tenant architecture, real-time chat, analytics dashboard, and Razorpay billing system. Deploy-ready with Docker.',features:['GPT-4 / ChatGPT Integration','Multi-tenant SaaS Architecture','Real-time WebSocket Chat','Analytics Dashboard','Razorpay Subscription Billing','Admin Panel','REST API + Swagger Docs','Docker + Deployment Guide'],emoji:'🤖',featured:true,rating:4.9,downloads:89,new:true},
+  {id:2,slug:'ecommerce-nextjs',title:'E-Commerce Platform (Next.js)',price:2499,origPrice:4999,category:'Web',technology:'Next.js 14 + Prisma + Tailwind + Razorpay',description:'Production-ready e-commerce platform with full product catalog, shopping cart, Razorpay payments, admin dashboard, inventory management, and order tracking.',features:['Full Product Catalog','Shopping Cart + Wishlist','Razorpay Payment Gateway','Order Management System','Admin Dashboard','Inventory &amp; Stock Alerts','Email Notifications','SEO Optimized'],emoji:'🛒',featured:true,rating:4.8,downloads:134},
+  {id:3,slug:'food-delivery-android',title:'Food Delivery Android App',price:1799,origPrice:3500,category:'Android',technology:'Kotlin + Firebase + Google Maps + Razorpay',description:'Complete food delivery app like Zomato/Swiggy with separate customer app, restaurant owner panel, and delivery partner app. Real-time tracking included.',features:['Customer Android App','Restaurant Owner Panel','Delivery Partner App','Real-time GPS Tracking','Push Notifications','Order History','Reviews &amp; Ratings','Payment Integration'],emoji:'🍕',featured:true,rating:4.7,downloads:67},
+  {id:4,slug:'ml-disease-prediction',title:'Disease Prediction ML System',price:1499,origPrice:2999,category:'AI',technology:'Python + Scikit-learn + Flask + Streamlit',description:'Machine learning system predicting 5 diseases (diabetes, heart disease, cancer, kidney, liver) using patient data. Includes pre-trained models and REST API.',features:['5 Disease Prediction Models','95%+ Model Accuracy','Beautiful Streamlit UI','REST API with Flask','Model Training Source Code','Data Visualization Charts','PDF Report Generation','Django Admin Panel'],emoji:'🏥',featured:false,rating:4.6,downloads:45},
+  {id:5,slug:'hospital-management',title:'Hospital Management System',price:2999,origPrice:5999,category:'Final Year',technology:'Java + Spring Boot + MySQL + Thymeleaf',description:'Complete hospital management system with patient records, appointment booking, billing, pharmacy management, lab reports, and multi-role access.',features:['Patient Registration &amp; Records','Doctor Schedule Management','Appointment Booking System','Billing &amp; Invoice Module','Pharmacy Management','Lab Reports System','Admin Portal','PDF Report Export'],emoji:'🏨',featured:false,rating:4.8,downloads:78},
+  {id:6,slug:'blockchain-voting',title:'Blockchain Voting System',price:2199,origPrice:4499,category:'Final Year',technology:'Solidity + React + Ethereum + MetaMask',description:'Decentralized voting system on Ethereum blockchain. Transparent, tamper-proof voting with smart contracts. Perfect CSE final year project with strong marks.',features:['Ethereum Smart Contracts','MetaMask Wallet Integration','Transparent Vote Tallying','Voter Registration System','Results Dashboard','Blockchain Audit Trail','IPFS Document Storage','Anti-Double Vote Logic'],emoji:'🗳️',featured:false,rating:4.7,downloads:34},
+  {id:7,slug:'social-media-react',title:'Social Media App (React)',price:1899,origPrice:3799,category:'React',technology:'React + Node.js + MongoDB + Socket.IO',description:'Full-featured social media platform with news feed, stories, real-time chat, notifications, and follow system — similar to Instagram/Twitter architecture.',features:['User Profiles &amp; Bio','Scrollable News Feed','Stories Feature','Real-time Chat (Socket.IO)','Push Notifications','Follow / Unfollow System','Image &amp; Video Uploads','Explore Page'],emoji:'📸',featured:true,rating:4.5,downloads:91},
+  {id:8,slug:'inventory-management-python',title:'Inventory Management System',price:1299,origPrice:2599,category:'Python',technology:'Python + Django + PostgreSQL + REST API',description:'Complete inventory management with barcode scanning, real-time stock tracking, supplier management, purchase orders, and comprehensive sales reports.',features:['Product &amp; SKU Catalog','Barcode Scanner Support','Low Stock Alerts','Supplier Management','Purchase Orders','Sales Analytics Reports','REST API','Excel / PDF Export'],emoji:'📦',featured:false,rating:4.6,downloads:56},
+  {id:9,slug:'student-portal-java',title:'Student Management Portal',price:1599,origPrice:3199,category:'Java',technology:'Java + Spring Boot + MySQL + Thymeleaf',description:'Comprehensive student management system with attendance tracking, grade management, timetable, parent portal, and SMS notification integration.',features:['Student Registration &amp; Profiles','Attendance Management System','Grade &amp; Marks Management','Class Timetable Builder','Parent Login Portal','SMS &amp; Email Alerts','Report Cards PDF','Admin Dashboard'],emoji:'🎓',featured:false,rating:4.7,downloads:88},
+  {id:10,slug:'fintech-dashboard',title:'FinTech Analytics Dashboard',price:3499,origPrice:6999,category:'Web',technology:'Next.js + D3.js + Node.js + PostgreSQL',description:'Premium financial analytics dashboard with real-time interactive charts, portfolio tracking, transaction history, budget planner, and tax computation tools.',features:['Real-time Interactive Charts','Portfolio Performance Tracker','Transaction History &amp; Filters','Budget Planning Tools','Tax Calculator Module','PDF Financial Reports','Dark / Light Mode Toggle','REST API Backend'],emoji:'📊',featured:true,rating:4.9,downloads:23,new:true},
+  {id:11,slug:'taxi-booking-app',title:'Taxi Booking Android App',price:2299,origPrice:4599,category:'Android',technology:'Kotlin + Google Maps SDK + Firebase + Stripe',description:'Uber-clone Android application with complete rider and driver apps, real-time GPS tracking, dynamic fare calculation, and integrated payment.',features:['Rider Android App (Kotlin)','Driver Android App (Kotlin)','Real-time GPS Tracking','Dynamic Fare Calculator','Trip History &amp; Receipts','Star Ratings System','In-app Wallet Payments','Push Notifications'],emoji:'🚕',featured:false,rating:4.6,downloads:41},
+  {id:12,slug:'nlp-resume-analyzer',title:'AI Resume Analyzer (NLP)',price:999,origPrice:1999,category:'AI',technology:'Python + NLTK + spaCy + Streamlit',description:'NLP-powered resume analyzer that scores resumes against job descriptions, extracts key skills, and provides personalized improvement recommendations.',features:['ATS Compatibility Score','Skill Extraction (NLP)','Job Description Matching','Keyword Gap Analysis','Improvement Suggestions','PDF &amp; DOCX Parser','Detailed HTML Report','Bulk Analysis API'],emoji:'📄',featured:false,rating:4.5,downloads:112},
+  {id:13,slug:'lms-learning-platform',title:'Online Learning Platform (LMS)',price:2799,origPrice:5599,category:'Web',technology:'Next.js + Prisma + S3 + Razorpay + Stripe',description:'Complete Learning Management System like Udemy with video course creation, quiz engine, certificates, progress tracking, and instructor earnings dashboard.',features:['Video Course Builder','HLS Adaptive Streaming','Quiz &amp; Assignment Engine','Completion Certificates','Student Progress Tracking','Razorpay Course Payments','Instructor Revenue Dashboard','Discussion Forums'],emoji:'🎬',featured:false,rating:4.8,downloads:29},
+  {id:14,slug:'expense-tracker-android',title:'Expense Tracker Android App',price:799,origPrice:1599,category:'Android',technology:'Kotlin + Room Database + MPAndroidChart',description:'Beautiful personal finance tracker with category-wise tracking, monthly bar &amp; pie charts, budget limits with alerts, CSV export, and home screen widgets.',features:['Category Expense Tracking','Monthly Bar &amp; Pie Charts','Budget Limit Alerts','Export to CSV / Excel','Home Screen Widgets','Dark Mode Support','Auto Backup to Google Drive','Recurring Transactions'],emoji:'💰',featured:false,rating:4.6,downloads:156},
+  {id:15,slug:'iot-smart-home',title:'IoT Smart Home Dashboard',price:1999,origPrice:3999,category:'Final Year',technology:'Python + MQTT + React + Raspberry Pi',description:'Smart home IoT system with real-time device monitoring, automation rules, energy consumption tracking, and mobile-friendly React dashboard.',features:['Multi-device Control Panel','Automation Rules Engine','Energy Consumption Monitor','Real-time MQTT Updates','Mobile-responsive Dashboard','Voice Command Support','Temperature &amp; Humidity Sensors','Alert Notifications'],emoji:'🏠',featured:false,rating:4.7,downloads:19},
+  {id:16,slug:'face-recognition-attendance',title:'Face Recognition Attendance',price:1699,origPrice:3399,category:'AI',technology:'Python + OpenCV + DeepFace + Flask + MySQL',description:'Automated attendance system using real-time facial recognition. Supports multiple cameras, attendance reports, and email notifications for absentees.',features:['Real-time Face Detection','Multi-person Recognition','Automatic Attendance Marking','Attendance Reports &amp; Stats','Camera Management System','Email Alerts for Absentees','Excel / PDF Export','Admin Web Panel'],emoji:'👤',featured:false,rating:4.8,downloads:63},
+  {id:17,slug:'cricket-score-app',title:'Live Cricket Score App',price:899,origPrice:1799,category:'Android',technology:'Kotlin + Retrofit + Cricket API + Firebase',description:'Real-time cricket score tracker with live ball-by-ball updates, match schedules, player statistics, team rankings, and push notifications for milestones.',features:['Live Ball-by-ball Scores','Full Match Scorecard','Player Statistics','Team ICC Rankings','Match Schedules &amp; Calendar','Push Notifications','Commentary Feed','Offline Match History'],emoji:'🏏',featured:false,rating:4.4,downloads:44},
+  {id:18,slug:'todo-productivity-app',title:'Team Productivity Manager',price:699,origPrice:1399,category:'React',technology:'React + Node.js + MongoDB + Socket.IO',description:'Premium productivity and project management tool with Kanban boards, time tracking, team collaboration, calendar view, and detailed analytics.',features:['Kanban Board with Drag &amp; Drop','Time Tracking per Task','Team Collaboration Tools','Calendar &amp; Timeline View','Tags, Labels &amp; Priorities','Recurring Task Support','Productivity Analytics','Mobile Responsive PWA'],emoji:'✅',featured:false,rating:4.5,downloads:201},
+  {id:19,slug:'hotel-booking-system',title:'Hotel Reservation System',price:2199,origPrice:4399,category:'Java',technology:'Java + Spring Boot + MySQL + Thymeleaf + Razorpay',description:'Complete hotel reservation system with room management, booking calendar, guest portal, check-in/out management, billing, and housekeeping module.',features:['Room Type Management','Booking Calendar View','Guest Self-service Portal','Check-in / Check-out System','Invoice &amp; Billing Module','Housekeeping Task Tracker','Occupancy Reports','Razorpay Online Payments'],emoji:'🏩',featured:false,rating:4.7,downloads:37},
+  {id:20,slug:'news-aggregator-ai',title:'AI News Aggregator Platform',price:1199,origPrice:2399,category:'Python',technology:'Python + Scrapy + BERT + React + FastAPI',description:'AI-powered news aggregation platform that scrapes, categorizes, and summarizes news using BERT. Features personalized feed, bookmarks, and search.',features:['Multi-source Web Scraping','BERT-powered Summarization','Category Auto-classification','Personalized News Feed','Full-text Search Engine','Bookmarks &amp; Reading List','REST API Access','Admin Content Manager'],emoji:'📰',featured:false,rating:4.5,downloads:52},
+];
+
+const WA_NUMBER = '919876543210';
+let currentFilter = '';
+let displayedProjects = [...PROJECTS];
+let currentProject = null;
+
+// ===== PAGE NAV =====
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('navLinks').classList.remove('open');
+  if(page === 'projects') { displayedProjects = [...PROJECTS]; renderProjectsGrid(); }
+  if(page === 'home') setTimeout(animateCounters, 100);
+  initReveal();
+}
+
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+// ===== SCROLL PROGRESS =====
+window.addEventListener('scroll', () => {
+  const el = document.documentElement;
+  const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+  document.getElementById('progressBar').style.width = Math.min(pct,100) + '%';
+});
+
+// ===== CARD HTML =====
+const gradMap = {
+  'AI':'linear-gradient(135deg,rgba(123,110,246,.22),rgba(0,229,255,.08))',
+  'Web':'linear-gradient(135deg,rgba(0,229,255,.18),rgba(123,110,246,.08))',
+  'Android':'linear-gradient(135deg,rgba(52,168,83,.2),rgba(0,229,255,.06))',
+  'Python':'linear-gradient(135deg,rgba(55,107,216,.2),rgba(255,205,0,.06))',
+  'Java':'linear-gradient(135deg,rgba(245,166,35,.2),rgba(220,53,69,.08))',
+  'Final Year':'linear-gradient(135deg,rgba(220,53,69,.18),rgba(123,110,246,.08))',
+  'React':'linear-gradient(135deg,rgba(97,218,251,.18),rgba(123,110,246,.08))',
+};
+
+function cardHTML(p) {
+  const grad = gradMap[p.category] || gradMap.AI;
+  const newBadge = p.new ? '<span style="background:var(--accent);color:#000;font-size:.62rem;font-weight:800;padding:.2rem .55rem;border-radius:100px;letter-spacing:.5px">NEW</span>' : '';
+  return `
+  <div class="p-card" onclick="openDetail(${p.id})">
+    <div class="p-thumb" style="background:${grad}">${p.emoji}</div>
+    <div class="p-body">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.45rem">
+        <div class="p-cat">${p.category}</div>${newBadge}
+      </div>
+      <div class="p-title">${p.title}</div>
+      <div class="p-tech">⚙ ${p.technology}</div>
+      <div class="rating">
+        <span class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5-Math.floor(p.rating))}</span>
+        <span class="rating-num">${p.rating} (${p.downloads} bought)</span>
+      </div>
+      <div class="p-footer">
+        <div>
+          <div class="p-price">₹${p.price.toLocaleString('en-IN')}</div>
+          <div style="font-size:.68rem;color:var(--muted);text-decoration:line-through">₹${p.origPrice.toLocaleString('en-IN')}</div>
+        </div>
+        <div class="p-actions">
+          <button class="btn-sm btn-view" onclick="event.stopPropagation();openDetail(${p.id})" aria-label="View ${p.title}">Details</button>
+          <button class="btn-sm btn-buy" onclick="event.stopPropagation();buyProject(${p.id})" aria-label="Buy ${p.title}">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderFeatured() {
+  document.getElementById('featuredGrid').innerHTML = PROJECTS.filter(p=>p.featured).slice(0,6).map(cardHTML).join('');
+}
+
+function renderProjectsGrid() {
+  const grid = document.getElementById('projectsGrid');
+  if(!grid) return;
+  grid.innerHTML = displayedProjects.length
+    ? displayedProjects.map(cardHTML).join('')
+    : '<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--muted)"><div style="font-size:3rem;margin-bottom:1rem">🔍</div><p>No projects found. Try a different search.</p></div>';
+  const cnt = document.getElementById('resultCount');
+  if(cnt) cnt.textContent = `Showing ${displayedProjects.length} project${displayedProjects.length!==1?'s':''}`;
+}
+
+function filterProjects() {
+  const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  displayedProjects = PROJECTS.filter(p => {
+    const matchQ = !q || p.title.toLowerCase().includes(q) || p.technology.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
+    const matchF = !currentFilter || p.category === currentFilter;
+    return matchQ && matchF;
+  });
+  renderProjectsGrid();
+}
+
+function setFilter(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('#filterTags .tag').forEach(t => {
+    const label = t.textContent.trim().replace(/^[🤖🌐📱🐍☕🎓⚛️]\s?/,'');
+    t.classList.toggle('active', label === (cat || 'All') || (cat && t.textContent.includes(cat)));
+    if(!cat) t.classList.toggle('active', t.textContent.trim() === 'All');
+  });
+  filterProjects();
+}
+
+function sortProjects(val) {
+  const arr = [...displayedProjects];
+  if(val==='price-asc') arr.sort((a,b)=>a.price-b.price);
+  else if(val==='price-desc') arr.sort((a,b)=>b.price-a.price);
+  else if(val==='rating') arr.sort((a,b)=>b.rating-a.rating);
+  else if(val==='newest') arr.sort((a,b)=>b.id-a.id);
+  else arr.sort((a,b)=>a.id-b.id);
+  displayedProjects = arr;
+  renderProjectsGrid();
+}
+
+function filterAndGo(cat) {
+  currentFilter = cat;
+  displayedProjects = PROJECTS.filter(p => p.category === cat);
+  showPage('projects');
+}
+
+// ===== DETAIL PAGE =====
+function openDetail(id) {
+  currentProject = PROJECTS.find(p=>p.id===id);
+  if(!currentProject) return;
+  const p = currentProject;
+  document.getElementById('detailBreadcrumb').textContent = p.title;
+  const grad = gradMap[p.category] || gradMap.AI;
+  const discount = Math.round((1-p.price/p.origPrice)*100);
+  document.getElementById('detailContent').innerHTML = `
+    <div>
+      <div class="detail-img" style="background:${grad}">${p.emoji}</div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem">
+        <span class="t-badge" style="background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--accent)">${p.category}</span>
+        <span class="t-badge">⭐ ${p.rating}/5.0</span>
+        <span class="t-badge">${p.downloads}+ buyers</span>
+        <span class="t-badge">30-Day Support</span>
+      </div>
+      <h1 style="font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;letter-spacing:-1px;margin-bottom:1rem;line-height:1.2">${p.title}</h1>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'overview')">Overview</button>
+        <button class="tab-btn" onclick="switchTab(this,'features')">Features</button>
+        <button class="tab-btn" onclick="switchTab(this,'install')">Installation</button>
+        <button class="tab-btn" onclick="switchTab(this,'tech')">Tech Stack</button>
+      </div>
+      <div class="tab-content active" id="tab-overview">
+        <p style="color:var(--muted);font-size:.95rem;line-height:1.85;margin-bottom:1.5rem">${p.description}</p>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem">
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem">
+            <div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">CATEGORY</div>
+            <div style="font-size:.95rem;font-weight:700">${p.category}</div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem">
+            <div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">BUYERS</div>
+            <div style="font-size:.95rem;font-weight:700">${p.downloads}+ purchases</div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem">
+            <div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">RATING</div>
+            <div style="font-size:.95rem;font-weight:700">⭐ ${p.rating} / 5.0</div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem">
+            <div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">SUPPORT</div>
+            <div style="font-size:.95rem;font-weight:700">30 Days Free</div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-features">
+        <ul class="feature-list">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+      </div>
+      <div class="tab-content" id="tab-install">
+        <div class="code-block">
+          <div class="code-comment"># Quick Setup Guide</div>
+          <div style="margin-top:.5rem">1. git clone [download-link-from-email]</div>
+          <div>2. cd ${p.slug}</div>
+          <div>3. npm install  <span class="code-comment"># or pip install -r requirements.txt</span></div>
+          <div>4. cp .env.example .env</div>
+          <div>5. <span class="code-comment"># Fill in your environment variables</span></div>
+          <div>6. npm run dev  <span class="code-comment"># or python manage.py runserver</span></div>
+        </div>
+        <div style="margin-top:1.25rem;padding:1rem;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.15);border-radius:var(--radius-sm)">
+          <p style="color:var(--accent);font-size:.82rem;font-weight:700;margin-bottom:.35rem">📄 Full Documentation Included</p>
+          <p style="color:var(--muted);font-size:.82rem;line-height:1.65">Complete setup guide, database schema, API documentation, and deployment instructions included in the ZIP file. WhatsApp support available if you get stuck.</p>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-tech">
+        <div style="margin-bottom:1.25rem">
+          <div style="font-size:.75rem;color:var(--muted);font-weight:700;margin-bottom:.65rem;letter-spacing:.5px">CORE TECHNOLOGY</div>
+          <div class="tech-badges">${p.technology.split('+').map(t=>`<span class="t-badge" style="font-size:.8rem;padding:.4rem .9rem">${t.trim()}</span>`).join('')}</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--muted);font-weight:700;margin-bottom:.65rem;letter-spacing:.5px">INCLUDED IN DOWNLOAD</div>
+          <div class="tech-badges">
+            <span class="t-badge" style="background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--accent)">✓ Full Source Code</span>
+            <span class="t-badge" style="background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--accent)">✓ Database Scripts</span>
+            <span class="t-badge" style="background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--accent)">✓ Documentation</span>
+            <span class="t-badge" style="background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--accent)">✓ .env Example</span>
+            <span class="t-badge" style="background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--accent)">✓ Deployment Guide</span>
+            <span class="t-badge" style="background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--accent)">✓ 30-Day Support</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="buy-card">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.25rem">
+          <div class="big-price">₹${p.price.toLocaleString('en-IN')}</div>
+          <span style="background:rgba(0,229,255,.15);color:var(--accent);font-size:.72rem;font-weight:800;padding:.3rem .7rem;border-radius:100px">${discount}% OFF</span>
+        </div>
+        <div style="font-size:.8rem;color:var(--muted);text-decoration:line-through;margin-bottom:1.1rem">₹${p.origPrice.toLocaleString('en-IN')} original price</div>
+        <button class="btn-primary" style="width:100%;padding:1rem;font-size:1rem;margin-bottom:.75rem" onclick="buyProject(${p.id})">⚡ Buy Now — ₹${p.price.toLocaleString('en-IN')}</button>
+        <button class="btn-secondary" style="width:100%;padding:.8rem;font-size:.9rem" onclick="inquireProject(${p.id})">💬 WhatsApp Inquiry</button>
+        <div class="divider"></div>
+        <div class="trust-items">
+          <div class="trust-item"><span style="color:var(--accent)">⚡</span><span>Instant download after payment</span></div>
+          <div class="trust-item"><span style="color:var(--accent)">✅</span><span>100% working source code</span></div>
+          <div class="trust-item"><span style="color:var(--accent)">💬</span><span>30-day WhatsApp support</span></div>
+          <div class="trust-item"><span style="color:var(--accent)">🔒</span><span>Secure Razorpay payment</span></div>
+          <div class="trust-item"><span style="color:var(--accent)">📄</span><span>Personal + commercial license</span></div>
+          <div class="trust-item"><span style="color:var(--accent)">♻️</span><span>Free future updates</span></div>
+        </div>
+        <div class="divider"></div>
+        <div style="text-align:center;font-size:.73rem;color:var(--muted);line-height:1.6">🔒 Secured by Razorpay · UPI · Cards · NetBanking · Wallets</div>
+      </div>
+    </div>`;
+  const related = PROJECTS.filter(r=>r.category===p.category&&r.id!==p.id).slice(0,3);
+  document.getElementById('relatedGrid').innerHTML = related.map(cardHTML).join('');
+  showPage('detail');
+}
+
+function switchTab(btn, tabId) {
+  btn.closest('.p-card, div')?.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const el = document.getElementById('tab-'+tabId);
+  if(el) el.classList.add('active');
+}
+
+// ===== PAYMENT (Razorpay) =====
+function buyProject(id) {
+  const p = PROJECTS.find(pr=>pr.id===id);
+  if(!p) return;
+  if(typeof Razorpay !== 'undefined') {
+    const options = {
+      key: 'rzp_test_YOUR_KEY_HERE', // Replace with your key
+      amount: p.price * 100,
+      currency: 'INR',
+      name: 'ProjectStore',
+      description: p.title,
+      handler: () => paymentSuccess(p),
+      prefill: {name:'',email:'',contact:''},
+      notes: {project_id: p.id, project_slug: p.slug},
+      theme: {color:'#7B6EF6'}
+    };
+    new Razorpay(options).open();
+  } else {
+    showModal('⚡','Payment Demo Mode',
+      `In production, Razorpay checkout opens here for ₹${p.price.toLocaleString('en-IN')}. After payment, you get instant download access to "${p.title}".`,
+      '⬇️ Simulate Download', () => { showToast('📧 Download link sent to your email!','✅'); openWhatsApp('Hello ProjectStore, I just purchased: '+p.title+'. Please send me the download link.'); });
+  }
+}
+
+function paymentSuccess(p) {
+  showModal('🎉','Payment Successful!',
+    `Thank you for purchasing "${p.title}"! Your download link has been sent to your email. Click below to download now.`,
+    '⬇️ Download Project', () => showToast('Download started! Check your downloads folder.','📥'));
+}
+
+// ===== WHATSAPP =====
+function openWhatsApp(msg) {
+  const text = encodeURIComponent(msg || "Hello ProjectStore! I'd like to know more about your projects.");
+  window.open(`https://wa.me/${WA_NUMBER}?text=${text}`, '_blank');
+}
+
+function inquireProject(id) {
+  const p = PROJECTS.find(pr=>pr.id===id);
+  if(!p) return;
+  const msg = `Hello ProjectStore,\n\nI am interested in purchasing:\n\n📌 *${p.title}*\n💰 Price: ₹${p.price.toLocaleString('en-IN')}\n⚙️ Tech: ${p.technology}\n🏷️ Category: ${p.category}\n\nCould you please provide more details, a demo, or any customization options?\n\nThank you!`;
+  openWhatsApp(msg);
+}
+
+// ===== CUSTOM FORM =====
+function submitCustomForm() {
+  const name = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const title = document.getElementById('cf-title').value.trim();
+  const tech = document.getElementById('cf-tech').value;
+  const budget = document.getElementById('cf-budget').value;
+  const deadline = document.getElementById('cf-deadline').value;
+  const priority = document.getElementById('cf-priority').value;
+  const desc = document.getElementById('cf-desc').value.trim();
+  const wa = document.getElementById('cf-wa').value.trim();
+  if(!name){showToast('Please enter your name ⚠️','⚠️');return;}
+  if(!email||!email.includes('@')){showToast('Please enter a valid email ⚠️','⚠️');return;}
+  if(!title){showToast('Please enter a project title ⚠️','⚠️');return;}
+  if(!desc||desc.length<20){showToast('Please describe your project in detail ⚠️','⚠️');return;}
+  const msg = `Hello ProjectStore,\n\nI need a *Custom Project Built*.\n\n👤 *Name:* ${name}\n📧 *Email:* ${email}${wa?'\n📱 *WhatsApp:* '+wa:''}\n\n📌 *Project Title:* ${title}\n⚙️ *Technology:* ${tech}\n💰 *Budget:* ${budget}\n📅 *Deadline:* ${deadline||'Flexible'}\n🚀 *Priority:* ${priority}\n\n📝 *Description:*\n${desc}\n\nPlease send me a free quote!`;
+  showModal('🚀','Request Ready!',
+    "Your custom project request has been prepared. Click below to send it directly to our team on WhatsApp — we'll respond with a free quote within 2 hours.",
+    '💬 Send on WhatsApp', () => openWhatsApp(msg));
+}
+
+// ===== CONTACT FORM =====
+function submitContact() {
+  const name = document.getElementById('cnt-name')?.value?.trim();
+  const email = document.getElementById('cnt-email')?.value?.trim();
+  const msg = document.getElementById('cnt-msg')?.value?.trim();
+  if(!name||!email||!msg){showToast('Please fill all fields ⚠️','⚠️');return;}
+  showToast('Message sent! We\'ll reply within 4 hours. ✅','✅');
+}
+
+// ===== MODAL =====
+function showModal(icon, title, desc, btn1Text, btn1Action) {
+  document.getElementById('modalIcon').textContent = icon;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalDesc').textContent = desc;
+  const b1 = document.getElementById('modalBtn1');
+  b1.textContent = btn1Text;
+  b1.onclick = () => { closeModal(); if(btn1Action) btn1Action(); };
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+function modalOverlayClick(e) {
+  if(e.target === document.getElementById('modal')) closeModal();
+}
+
+// ===== TOAST =====
+function showToast(msg, icon='✅') {
+  const t = document.getElementById('toast');
+  document.getElementById('toastText').textContent = msg;
+  document.getElementById('toastIcon').textContent = icon;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3800);
+}
+
+// ===== FAQ =====
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const ans = item.querySelector('.faq-a');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => {
+    i.classList.remove('open');
+    i.querySelector('.faq-a').classList.remove('open');
+  });
+  if(!isOpen) { item.classList.add('open'); ans.classList.add('open'); }
+}
+
+// ===== ANIMATED COUNTERS =====
+function animateCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = +el.getAttribute('data-count');
+    const suffix = el.getAttribute('data-suffix') || '';
+    let start = 0;
+    const duration = 1400;
+    const startTime = performance.now();
+    function update(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(eased * target);
+      el.textContent = current.toLocaleString('en-IN') + suffix;
+      if(progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
+}
+
+// ===== SCROLL REVEAL =====
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, {threshold:.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => obs.observe(el));
+}
+
+// ===== INIT =====
+renderFeatured();
+setTimeout(animateCounters, 300);
+initReveal();
+
+// Re-run reveal on page changes
+const pageObs = new MutationObserver(() => { setTimeout(initReveal, 50); });
+pageObs.observe(document.body, {subtree:true, attributeFilter:['class']});
+
+// Load Razorpay script
+const rz = document.createElement('script');
+rz.src = 'https://checkout.razorpay.com/v1/checkout.js';
+document.head.appendChild(rz);
+</script>
+</body>
+</html>
