@@ -5,47 +5,76 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ProjectStore — Premium Software Marketplace</title>
 <meta name="description" content="India's premium marketplace for ready-made software projects, source code, final year projects, AI projects, web apps, and Android apps.">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#080808">
+<link rel="manifest" href="data:application/json,{%22name%22:%22ProjectStore%22,%22short_name%22:%22ProjectStore%22,%22display%22:%22standalone%22,%22background_color%22:%22%23080808%22,%22theme_color%22:%22%237B6EF6%22}">
+
+<!-- PWA & SEO meta -->
+<meta property="og:title" content="ProjectStore — Premium Software Marketplace">
+<meta property="og:description" content="Buy ready-made software projects instantly. 500+ projects, full source code, 30-day support.">
+<meta name="robots" content="index, follow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#080808;--card:#111114;--card2:#18181d;
-  --primary:#7B6EF6;--accent:#00E5FF;
+  --primary:#7B6EF6;--accent:#00E5FF;--success:#22c55e;--warn:#f59e0b;
   --text:#FFFFFF;--muted:#8A8A9A;--border:rgba(255,255,255,0.07);
   --glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.08);
   --radius:16px;--radius-sm:10px;
+  --font-body:'DM Sans',sans-serif;--font-display:'Syne',sans-serif;
+}
+[data-theme="light"]{
+  --bg:#f4f3ff;--card:#ffffff;--card2:#f8f7ff;
+  --text:#0d0d14;--muted:#6b6b80;--border:rgba(0,0,0,0.08);
+  --glass:rgba(0,0,0,0.03);--glass2:rgba(0,0,0,0.06);
 }
 html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
 .page{display:none;min-height:100vh;animation:fadeIn .35s ease}
 .page.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-/* NAV */
+/* ---- NAV ---- */
 nav{position:fixed;top:0;left:0;right:0;z-index:1000;backdrop-filter:blur(24px);
   background:rgba(8,8,8,0.88);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;}
-.logo{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;
+  display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;
+  transition:background .3s;}
+[data-theme="light"] nav{background:rgba(244,243,255,0.88)}
+.logo{font-family:var(--font-display);font-size:1.4rem;font-weight:800;
   background:linear-gradient(135deg,var(--primary),var(--accent));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;letter-spacing:-0.5px;}
 .nav-links{display:flex;gap:2rem;align-items:center;}
 .nav-links a{color:var(--muted);font-size:.875rem;text-decoration:none;cursor:pointer;transition:color .2s;font-weight:500;}
-.nav-links a:hover{color:#fff}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:.75rem;}
 .nav-cta{background:linear-gradient(135deg,var(--primary),#5847d4);color:#fff;border:none;
   padding:.55rem 1.3rem;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;
-  transition:transform .2s,box-shadow .2s;font-family:'Inter',sans-serif;}
+  transition:transform .2s,box-shadow .2s;font-family:var(--font-body);}
 .nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(123,110,246,.4)}
+.icon-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--glass2);
+  color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:1rem;transition:all .2s;flex-shrink:0;}
+.icon-btn:hover{color:var(--text);border-color:rgba(123,110,246,.4);background:rgba(123,110,246,.1)}
+.icon-btn.active{color:var(--primary);border-color:rgba(123,110,246,.5);background:rgba(123,110,246,.1)}
+.wishlist-count{position:relative;}
+.wl-badge{position:absolute;top:-6px;right:-6px;background:var(--primary);color:#fff;
+  font-size:.58rem;font-weight:800;width:16px;height:16px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;display:none;}
+.wl-badge.show{display:flex}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
-.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .3s}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
 @media(max-width:768px){
-  .nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:#0d0d10;
+  .nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:var(--card);
     flex-direction:column;padding:1.5rem;gap:1.25rem;border-bottom:1px solid var(--border);z-index:999;}
   .nav-links.open{display:flex}
   .hamburger{display:flex}
   .nav-cta{display:none}
 }
 
-/* HERO */
+/* ---- HERO ---- */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;padding:6rem 1.5rem 4rem;position:relative;overflow:hidden;}
 .hero-bg{position:absolute;inset:0;
@@ -62,7 +91,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;backdrop-filter:blur(24px);
   background:rgba(123,110,246,.12);border:1px solid rgba(123,110,246,.3);
   color:var(--primary);font-size:.73rem;font-weight:700;
   padding:.4rem 1.1rem;border-radius:100px;margin-bottom:1.75rem;letter-spacing:.8px;text-transform:uppercase;}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,6vw,4.5rem);font-weight:800;
+.hero h1{font-family:var(--font-display);font-size:clamp(2.2rem,6vw,4.5rem);font-weight:800;
   line-height:1.08;letter-spacing:-2px;max-width:850px;margin-bottom:1.5rem;}
 .hero h1 span{background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -70,11 +99,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;backdrop-filter:blur(24px);
 .hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
 .btn-primary{background:linear-gradient(135deg,var(--primary),#5847d4);color:#fff;border:none;
   padding:.9rem 2.1rem;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;
-  transition:transform .2s,box-shadow .25s;font-family:'Inter',sans-serif;letter-spacing:-.1px;}
+  transition:transform .2s,box-shadow .25s;font-family:var(--font-body);letter-spacing:-.1px;}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(123,110,246,.45)}
-.btn-secondary{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.12);
+.btn-secondary{background:rgba(255,255,255,.06);color:var(--text);border:1px solid rgba(255,255,255,.12);
   padding:.9rem 2.1rem;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;
-  transition:background .2s,transform .2s;font-family:'Inter',sans-serif;backdrop-filter:blur(8px);}
+  transition:background .2s,transform .2s;font-family:var(--font-body);backdrop-filter:blur(8px);}
+[data-theme="light"] .btn-secondary{background:rgba(0,0,0,.06);border-color:rgba(0,0,0,.12);}
 .btn-secondary:hover{background:rgba(255,255,255,.11);transform:translateY(-2px)}
 
 /* STATS */
@@ -82,20 +112,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;backdrop-filter:blur(24px);
   background:var(--border);border:1px solid var(--border);border-radius:var(--radius);
   overflow:hidden;margin:3rem auto 0;max-width:720px;width:100%;}
 .stat{background:var(--card);padding:1.35rem;text-align:center;}
-.stat-num{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;
-  background:linear-gradient(135deg,#fff,var(--muted));
+.stat-num{font-family:var(--font-display);font-size:1.9rem;font-weight:800;
+  background:linear-gradient(135deg,var(--text),var(--muted));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .stat-label{font-size:.73rem;color:var(--muted);margin-top:.3rem;font-weight:500;letter-spacing:.3px}
 @media(max-width:540px){.stats{grid-template-columns:repeat(2,1fr)}}
 
 /* FLOATING CARDS */
-.floating-wrap{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:3rem;perspective:800px;}
+.floating-wrap{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:3rem;}
 .f-card{background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:12px;
   padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;
   animation:floatCard 3.5s ease-in-out infinite;width:200px;
   box-shadow:0 8px 32px rgba(0,0,0,.4);}
-.f-card:nth-child(2){animation-delay:1.2s}
-.f-card:nth-child(3){animation-delay:2.4s}
+.f-card:nth-child(2){animation-delay:1.2s}.f-card:nth-child(3){animation-delay:2.4s}
 @keyframes floatCard{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
 .f-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
 .f-card-info small{color:var(--muted);font-size:.68rem;display:block}
@@ -106,15 +135,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;backdrop-filter:blur(24px);
 .container{max-width:1100px;margin:0 auto;}
 .section-tag{font-size:.72rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;
   color:var(--primary);margin-bottom:.85rem;display:inline-block;}
-.section-title{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,4.5vw,3rem);
+.section-title{font-family:var(--font-display);font-size:clamp(1.9rem,4.5vw,3rem);
   font-weight:800;letter-spacing:-1.2px;line-height:1.12;margin-bottom:.85rem;}
 .section-sub{color:var(--muted);font-size:1rem;max-width:520px;line-height:1.75;}
 .g-text{background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .sec-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
-.view-all{font-size:.82rem;color:var(--primary);cursor:pointer;font-weight:600;border:none;
-  background:none;font-family:'Inter',sans-serif;padding:.4rem .75rem;border-radius:6px;
-  border:1px solid rgba(123,110,246,.25);transition:background .2s;}
+.view-all{font-size:.82rem;color:var(--primary);cursor:pointer;font-weight:600;border:1px solid rgba(123,110,246,.25);
+  background:none;padding:.4rem .75rem;border-radius:6px;transition:background .2s;font-family:var(--font-body);}
 .view-all:hover{background:rgba(123,110,246,.1)}
 
 /* PROJECT CARDS */
@@ -125,44 +153,87 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;backdrop-filter:blur(24px);
 
 .p-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
   overflow:hidden;transition:transform .25s,border-color .25s,box-shadow .3s;cursor:pointer;
-  display:flex;flex-direction:column;}
+  display:flex;flex-direction:column;position:relative;}
 .p-card:hover{transform:translateY(-5px);border-color:rgba(123,110,246,.35);
-  box-shadow:0 24px 48px rgba(0,0,0,.45)}
+  box-shadow:0 24px 48px rgba(0,0,0,.35)}
 .p-thumb{height:165px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;
   position:relative;overflow:hidden;}
 .p-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.4))}
 .p-body{padding:1.15rem;flex:1;display:flex;flex-direction:column;}
 .p-cat{font-size:.67rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--accent);margin-bottom:.45rem;}
-.p-title{font-family:'Syne',sans-serif;font-size:.975rem;font-weight:700;line-height:1.35;margin-bottom:.5rem;}
-.p-tech{font-size:.73rem;color:var(--muted);margin-bottom:.65rem;display:flex;align-items:center;gap:.35rem;}
+.p-title{font-family:var(--font-display);font-size:.975rem;font-weight:700;line-height:1.35;margin-bottom:.5rem;}
+.p-tech{font-size:.73rem;color:var(--muted);margin-bottom:.4rem;display:flex;align-items:center;gap:.35rem;}
+.p-meta-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;flex-wrap:wrap;}
 .p-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:.75rem;}
-.p-price{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;}
+.p-price{font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:var(--text);}
 .p-actions{display:flex;gap:.45rem;}
 .btn-sm{font-size:.73rem;font-weight:600;padding:.4rem .9rem;border-radius:7px;cursor:pointer;
-  transition:all .2s;font-family:'Inter',sans-serif;border:none;}
+  transition:all .2s;font-family:var(--font-body);border:none;}
 .btn-buy{background:linear-gradient(135deg,var(--primary),#5847d4);color:#fff;}
 .btn-buy:hover{transform:scale(1.06);box-shadow:0 6px 18px rgba(123,110,246,.4)}
 .btn-view{background:var(--glass2);color:var(--muted);border:1px solid var(--border);}
-.btn-view:hover{color:#fff;background:var(--glass)}
-.rating{display:flex;align-items:center;gap:.35rem;margin-bottom:.5rem;}
+.btn-view:hover{color:var(--text);background:var(--glass)}
+.rating{display:flex;align-items:center;gap:.35rem;margin-bottom:.4rem;}
 .stars{color:#F5A623;font-size:.78rem;}
 .rating-num{font-size:.72rem;color:var(--muted);}
+
+/* WISHLIST HEART on card */
+.card-wl-btn{position:absolute;top:.75rem;right:.75rem;z-index:5;width:30px;height:30px;
+  border-radius:50%;background:rgba(0,0,0,.55);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;
+  transition:all .2s;backdrop-filter:blur(4px);}
+.card-wl-btn:hover{background:rgba(123,110,246,.5);transform:scale(1.15)}
+.card-wl-btn.wishlisted{background:rgba(239,68,68,.4);}
+
+/* DIFFICULTY & LICENSE BADGES */
+.diff-badge{font-size:.62rem;font-weight:700;padding:.22rem .6rem;border-radius:100px;letter-spacing:.3px;}
+.diff-beginner{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.25);}
+.diff-intermediate{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.25);}
+.diff-advanced{background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.25);}
+.setup-time{font-size:.62rem;color:var(--muted);display:flex;align-items:center;gap:.25rem;}
+.lic-badge{font-size:.62rem;font-weight:700;padding:.22rem .6rem;border-radius:100px;
+  background:rgba(0,229,255,.1);color:var(--accent);border:1px solid rgba(0,229,255,.2);}
 
 /* TAGS + FILTERS */
 .tag{display:inline-block;font-size:.72rem;font-weight:600;padding:.35rem .8rem;
   border-radius:100px;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;}
-.tag:hover{border-color:rgba(123,110,246,.4);color:#fff}
+.tag:hover{border-color:rgba(123,110,246,.4);color:var(--text)}
 .tag.active{border-color:rgba(123,110,246,.5);color:var(--primary);background:rgba(123,110,246,.1);}
-.filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.75rem;}
+.filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+
+/* ADVANCED FILTERS PANEL */
+.adv-filters{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.5rem;margin-bottom:1.75rem;display:none;}
+.adv-filters.open{display:block}
+.af-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+@media(max-width:700px){.af-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.af-grid{grid-template-columns:1fr}}
+.af-group label{display:block;font-size:.72rem;font-weight:700;color:var(--muted);
+  margin-bottom:.55rem;letter-spacing:.5px;text-transform:uppercase;}
+.price-range{display:flex;flex-direction:column;gap:.45rem;}
+.range-row{display:flex;gap:.5rem;align-items:center;}
+.range-input{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;
+  background:linear-gradient(90deg,var(--primary) var(--pct,50%),var(--border) var(--pct,50%));outline:none;cursor:pointer;}
+.range-input::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+  background:var(--primary);cursor:pointer;box-shadow:0 2px 8px rgba(123,110,246,.5);}
+.range-val{font-size:.78rem;font-weight:700;color:var(--primary);min-width:60px;text-align:right;}
+.rating-filter-stars{display:flex;gap:.35rem;flex-wrap:wrap;}
+.rf-star{font-size:.8rem;cursor:pointer;padding:.3rem .65rem;border-radius:100px;
+  border:1px solid var(--border);color:var(--muted);transition:all .2s;font-weight:600;}
+.rf-star.active,.rf-star:hover{border-color:rgba(245,166,35,.5);color:#f5a623;background:rgba(245,166,35,.1)}
+.tech-checkboxes{display:flex;flex-wrap:wrap;gap:.4rem;}
+.tech-check{cursor:pointer;font-size:.72rem;font-weight:600;padding:.3rem .7rem;
+  border-radius:100px;border:1px solid var(--border);color:var(--muted);transition:all .2s;user-select:none;}
+.tech-check.selected{border-color:rgba(123,110,246,.5);color:var(--primary);background:rgba(123,110,246,.1)}
 
 /* SEARCH */
 .search-bar{display:flex;gap:.75rem;background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:.8rem 1.1rem;margin-bottom:1.75rem;transition:border-color .2s;}
+  border-radius:var(--radius);padding:.8rem 1.1rem;margin-bottom:1rem;transition:border-color .2s;}
 .search-bar:focus-within{border-color:rgba(123,110,246,.5);box-shadow:0 0 0 3px rgba(123,110,246,.08)}
-.search-bar input{background:none;border:none;outline:none;color:#fff;font-size:.95rem;flex:1;font-family:'Inter',sans-serif;}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-size:.95rem;flex:1;font-family:var(--font-body);}
 .search-bar input::placeholder{color:var(--muted)}
 select.form-control-sm{background:var(--card);border:1px solid var(--border);border-radius:8px;
-  color:#fff;font-family:'Inter',sans-serif;padding:.5rem .9rem;font-size:.82rem;outline:none;cursor:pointer;}
+  color:var(--text);font-family:var(--font-body);padding:.5rem .9rem;font-size:.82rem;outline:none;cursor:pointer;}
 select.form-control-sm:focus{border-color:rgba(123,110,246,.5)}
 
 /* CATEGORIES */
@@ -171,7 +242,7 @@ select.form-control-sm:focus{border-color:rgba(123,110,246,.5)}
 .cat-pill{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
   padding:1.35rem;text-align:center;cursor:pointer;transition:all .25s;}
 .cat-pill:hover{border-color:rgba(123,110,246,.4);background:rgba(123,110,246,.06);transform:translateY(-4px);
-  box-shadow:0 12px 32px rgba(0,0,0,.3)}
+  box-shadow:0 12px 32px rgba(0,0,0,.2)}
 .cat-emoji{font-size:2.2rem;margin-bottom:.6rem;}
 .cat-name{font-size:.875rem;font-weight:700;}
 .cat-count{font-size:.72rem;color:var(--muted);margin-top:.25rem;}
@@ -204,8 +275,9 @@ select.form-control-sm:focus{border-color:rgba(123,110,246,.5)}
 .form-group label{display:block;font-size:.73rem;font-weight:700;color:var(--muted);
   margin-bottom:.5rem;letter-spacing:.5px;text-transform:uppercase;}
 .form-control{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);
-  border-radius:var(--radius-sm);padding:.8rem 1.05rem;color:#fff;font-size:.95rem;
-  font-family:'Inter',sans-serif;outline:none;transition:border-color .2s,background .2s;}
+  border-radius:var(--radius-sm);padding:.8rem 1.05rem;color:var(--text);font-size:.95rem;
+  font-family:var(--font-body);outline:none;transition:border-color .2s,background .2s;}
+[data-theme="light"] .form-control{background:rgba(0,0,0,.03);}
 .form-control:focus{border-color:rgba(123,110,246,.55);background:rgba(123,110,246,.04)}
 .form-control::placeholder{color:var(--muted)}
 textarea.form-control{resize:vertical;min-height:120px;}
@@ -217,9 +289,9 @@ textarea.form-control{resize:vertical;min-height:120px;}
 @media(max-width:920px){.detail-grid{grid-template-columns:1fr}}
 .detail-img{height:290px;border-radius:var(--radius);border:1px solid var(--border);
   display:flex;align-items:center;justify-content:center;font-size:7rem;margin-bottom:1.75rem;}
-.tabs{display:flex;gap:.4rem;margin-bottom:1.75rem;border-bottom:1px solid var(--border);padding-bottom:.6rem;}
+.tabs{display:flex;gap:.4rem;margin-bottom:1.75rem;border-bottom:1px solid var(--border);padding-bottom:.6rem;overflow-x:auto;}
 .tab-btn{padding:.5rem 1.1rem;border-radius:8px;border:none;background:none;color:var(--muted);
-  font-size:.875rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+  font-size:.875rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-body);white-space:nowrap;}
 .tab-btn.active{background:rgba(123,110,246,.15);color:var(--primary)}
 .tab-content{display:none}
 .tab-content.active{display:block}
@@ -228,7 +300,7 @@ textarea.form-control{resize:vertical;min-height:120px;}
 .feature-list li::before{content:'✦';color:var(--accent);font-size:.55rem;flex-shrink:0;margin-top:5px;}
 .buy-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
   padding:1.85rem;position:sticky;top:80px;}
-.big-price{font-family:'Syne',sans-serif;font-size:2.75rem;font-weight:800;
+.big-price{font-family:var(--font-display);font-size:2.75rem;font-weight:800;
   background:linear-gradient(135deg,var(--primary),var(--accent));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .divider{height:1px;background:var(--border);margin:1.35rem 0;}
@@ -243,7 +315,7 @@ textarea.form-control{resize:vertical;min-height:120px;}
 .step-num{width:46px;height:46px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(135deg,var(--primary),#5847d4);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;}
+  font-family:var(--font-display);font-weight:800;font-size:1rem;color:#fff;}
 .step-body h4{font-weight:700;margin-bottom:.4rem;font-size:.95rem;}
 .step-body p{color:var(--muted);font-size:.875rem;line-height:1.7;}
 
@@ -273,17 +345,35 @@ textarea.form-control{resize:vertical;min-height:120px;}
   opacity:0;pointer-events:none;transition:opacity .3s;}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:var(--card2);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);
-  padding:2.75rem;max-width:440px;width:92%;text-align:center;
+  padding:2.75rem;max-width:500px;width:92%;text-align:center;
   transform:scale(.93) translateY(10px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);}
+[data-theme="light"] .modal{border-color:rgba(0,0,0,.1)}
 .modal-overlay.open .modal{transform:scale(1) translateY(0)}
 .modal-icon{font-size:4rem;margin-bottom:1rem;}
-.modal h2{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:.6rem;}
+.modal h2{font-family:var(--font-display);font-size:1.6rem;font-weight:800;margin-bottom:.6rem;}
 .modal p{color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:1.75rem;}
 .modal-btns{display:flex;flex-direction:column;gap:.75rem;}
 
+/* WISHLIST PAGE */
+.wl-empty{text-align:center;padding:5rem 2rem;color:var(--muted);}
+.wl-empty .wl-empty-icon{font-size:4rem;margin-bottom:1rem;}
+
+/* PURCHASE HISTORY */
+.ph-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:1.1rem 1.35rem;display:flex;align-items:center;gap:1rem;margin-bottom:.75rem;}
+.ph-emoji{font-size:2rem;flex-shrink:0;}
+.ph-info{flex:1;}
+.ph-title{font-weight:700;font-size:.9rem;margin-bottom:.25rem;}
+.ph-meta{font-size:.75rem;color:var(--muted);}
+.ph-price{font-family:var(--font-display);font-weight:800;font-size:1.05rem;color:var(--primary);}
+.ph-dl-btn{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.25);color:var(--accent);
+  font-size:.75rem;font-weight:700;padding:.35rem .8rem;border-radius:7px;cursor:pointer;
+  white-space:nowrap;font-family:var(--font-body);transition:all .2s;}
+.ph-dl-btn:hover{background:rgba(0,229,255,.2)}
+
 /* TOAST */
 .toast{position:fixed;bottom:5.5rem;right:1.75rem;z-index:3000;
-  background:#1a1a1f;border:1px solid rgba(0,229,255,.25);border-radius:var(--radius-sm);
+  background:var(--card2);border:1px solid rgba(0,229,255,.25);border-radius:var(--radius-sm);
   padding:1rem 1.35rem;display:flex;align-items:center;gap:.8rem;max-width:310px;
   transform:translateX(130%);transition:transform .4s cubic-bezier(.32,.72,0,1);}
 .toast.show{transform:translateX(0)}
@@ -295,7 +385,7 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem;}
 @media(max-width:700px){.footer-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:440px){.footer-grid{grid-template-columns:1fr}}
-.footer-brand{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;
+.footer-brand{font-family:var(--font-display);font-size:1.25rem;font-weight:800;
   background:linear-gradient(135deg,var(--primary),var(--accent));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.8rem;}
 .footer-desc{color:var(--muted);font-size:.82rem;line-height:1.75;}
@@ -303,7 +393,7 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
   color:var(--muted);margin-bottom:.9rem;}
 .footer-col a{display:block;color:var(--muted);font-size:.82rem;margin-bottom:.55rem;
   cursor:pointer;text-decoration:none;transition:color .2s;}
-.footer-col a:hover{color:#fff}
+.footer-col a:hover{color:var(--text)}
 .footer-bottom{border-top:1px solid var(--border);padding-top:1.35rem;display:flex;
   justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;}
 .footer-copy{font-size:.78rem;color:var(--muted);}
@@ -311,15 +401,14 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
 /* PAGINATION */
 .pagination{display:flex;gap:.5rem;justify-content:center;margin-top:2.75rem;}
 .pg-btn{width:38px;height:38px;border-radius:8px;border:1px solid var(--border);
-  background:none;color:var(--muted);cursor:pointer;font-size:.875rem;
-  font-family:'Inter',sans-serif;transition:all .2s;}
+  background:none;color:var(--muted);cursor:pointer;font-size:.875rem;font-family:var(--font-body);transition:all .2s;}
 .pg-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
-.pg-btn:hover:not(.active){background:var(--glass2);color:#fff;}
+.pg-btn:hover:not(.active){background:var(--glass2);color:var(--text);}
 
 /* BREADCRUMB */
 .breadcrumb{display:flex;gap:.5rem;align-items:center;font-size:.8rem;color:var(--muted);margin-bottom:1.75rem;}
 .breadcrumb span{cursor:pointer;transition:color .2s;}
-.breadcrumb span:hover{color:#fff}
+.breadcrumb span:hover{color:var(--text)}
 .breadcrumb .sep{color:rgba(255,255,255,.15);font-size:.7rem;}
 
 /* SCROLL REVEAL */
@@ -336,38 +425,135 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
   padding:1.35rem;font-family:'Courier New',monospace;font-size:.82rem;color:var(--accent);line-height:1.9;overflow-x:auto;}
 .code-comment{color:var(--muted);}
 
+/* KEYBOARD SHORTCUT HINT */
+.kbd{display:inline-flex;align-items:center;background:var(--glass2);border:1px solid var(--border);
+  border-radius:4px;padding:.1rem .4rem;font-size:.68rem;color:var(--muted);font-family:monospace;}
+
+/* WHAT'S INCLUDED checklist */
+.included-list{display:flex;flex-direction:column;gap:.5rem;margin:.75rem 0;}
+.inc-item{display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--muted);}
+.inc-check{color:var(--success);font-size:.85rem;flex-shrink:0;}
+
+/* COMPARE BAR */
+.compare-bar{position:fixed;bottom:0;left:0;right:0;z-index:800;
+  background:var(--card2);border-top:1px solid var(--border);
+  padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  transform:translateY(100%);transition:transform .3s;flex-wrap:wrap;}
+.compare-bar.visible{transform:translateY(0)}
+.compare-slots{display:flex;gap:.75rem;flex-wrap:wrap;}
+.compare-slot{background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:.5rem .9rem;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:.5rem;}
+.compare-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;
+  padding:0;line-height:1;transition:color .2s;}
+.compare-remove:hover{color:var(--text)}
+
+/* SEARCH SUGGESTIONS */
+.search-suggestions{position:absolute;top:100%;left:0;right:0;background:var(--card);
+  border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);
+  z-index:100;max-height:220px;overflow-y:auto;display:none;}
+.search-suggestions.show{display:block}
+.sug-item{padding:.7rem 1.1rem;cursor:pointer;font-size:.875rem;transition:background .15s;
+  display:flex;align-items:center;gap:.75rem;color:var(--muted);}
+.sug-item:hover{background:var(--glass2);color:var(--text)}
+.sug-item strong{color:var(--text)}
+.search-wrap{position:relative;}
+
+/* PROMO BANNER */
+.promo-banner{background:linear-gradient(135deg,var(--primary),#5847d4);
+  text-align:center;padding:.55rem 1rem;font-size:.8rem;font-weight:600;
+  position:relative;z-index:999;}
+.promo-close{position:absolute;right:1rem;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:1.1rem;}
+
+/* ACCOUNT DROPDOWN */
+.acct-wrap{position:relative;}
+.acct-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:var(--card2);
+  border:1px solid var(--border);border-radius:var(--radius-sm);width:200px;
+  padding:.5rem 0;z-index:500;display:none;box-shadow:0 16px 48px rgba(0,0,0,.4);}
+.acct-dropdown.open{display:block}
+.acct-item{padding:.7rem 1.1rem;font-size:.85rem;cursor:pointer;color:var(--muted);
+  transition:background .15s;display:flex;align-items:center;gap:.65rem;}
+.acct-item:hover{background:var(--glass2);color:var(--text)}
+.acct-sep{height:1px;background:var(--border);margin:.35rem 0;}
+
+/* KEYBOARD SHORTCUTS MODAL */
+.shortcuts-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1.5rem;text-align:left;margin-top:1rem;}
+.sc-row{display:flex;align-items:center;justify-content:space-between;font-size:.85rem;}
+.sc-label{color:var(--muted);}
+
 @media(max-width:480px){
   .hero h1{font-size:2.1rem;letter-spacing:-1px}
   .form-card{padding:1.5rem}
   nav{padding:0 1rem}
   .detail-grid{gap:1.5rem}
+  .af-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
+<!-- PROMO BANNER -->
+<div id="promoBanner" class="promo-banner" role="banner">
+  🔥 Limited Time: Use code <strong>SAVE20</strong> for 20% off any project · <a href="#" style="color:rgba(255,255,255,.9);margin-left:.25rem" onclick="showPage('projects');closeBanner()">Shop Now →</a>
+  <button class="promo-close" onclick="closeBanner()" aria-label="Close banner">✕</button>
+</div>
+
 <!-- PROGRESS BAR -->
-<div class="progress-bar" id="progressBar"></div>
+<div class="progress-bar" id="progressBar" role="progressbar" aria-label="Page scroll progress"></div>
 
 <!-- NAV -->
-<nav>
-  <div class="logo" onclick="showPage('home')">ProjectStore</div>
+<nav role="navigation" aria-label="Main navigation">
+  <div class="logo" onclick="showPage('home')" role="link" tabindex="0" aria-label="ProjectStore home" onkeydown="if(event.key==='Enter')showPage('home')">ProjectStore</div>
   <div class="nav-links" id="navLinks">
-    <a onclick="showPage('projects')">Projects</a>
-    <a onclick="showPage('custom')">Custom Project</a>
-    <a onclick="showPage('about')">About</a>
-    <a onclick="showPage('contact')">Contact</a>
+    <a onclick="showPage('projects')" tabindex="0" role="button">Projects</a>
+    <a onclick="showPage('custom')" tabindex="0" role="button">Custom Project</a>
+    <a onclick="showPage('about')" tabindex="0" role="button">About</a>
+    <a onclick="showPage('contact')" tabindex="0" role="button">Contact</a>
   </div>
-  <button class="nav-cta" onclick="showPage('projects')">Browse Projects</button>
-  <button class="hamburger" onclick="toggleNav()" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+  <div class="nav-right">
+    <!-- Theme toggle -->
+    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle dark/light mode" title="Toggle theme (T)">🌙</button>
+    <!-- Wishlist -->
+    <div class="wishlist-count">
+      <button class="icon-btn" onclick="showPage('wishlist')" aria-label="Wishlist" title="Wishlist (W)">♡
+        <span class="wl-badge" id="wlBadge">0</span>
+      </button>
+    </div>
+    <!-- Account -->
+    <div class="acct-wrap">
+      <button class="icon-btn" id="acctBtn" onclick="toggleAcctDropdown()" aria-label="Account" aria-expanded="false" title="Account (A)">👤</button>
+      <div class="acct-dropdown" id="acctDropdown" role="menu">
+        <div class="acct-item" role="menuitem" onclick="showPurchaseHistory()">📦 Purchase History</div>
+        <div class="acct-item" role="menuitem" onclick="showPage('wishlist')">♡ Wishlist</div>
+        <div class="acct-sep"></div>
+        <div class="acct-item" role="menuitem" onclick="showShortcutsModal()">⌨️ Keyboard Shortcuts</div>
+        <div class="acct-sep"></div>
+        <div class="acct-item" style="color:#ef4444" role="menuitem">Sign Out</div>
+      </div>
+    </div>
+    <button class="nav-cta" onclick="showPage('projects')">Browse Projects</button>
+    <button class="hamburger" onclick="toggleNav()" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
 
 <!-- WHATSAPP BUTTON -->
 <button class="wa-float" onclick="openWhatsApp('')" aria-label="Chat on WhatsApp">
   <span class="wa-label">Chat with us</span>💬
 </button>
+
+<!-- COMPARE BAR -->
+<div class="compare-bar" id="compareBar" role="complementary" aria-label="Project comparison">
+  <div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">Comparing <span id="compareCount">0</span>/3 projects</div>
+    <div class="compare-slots" id="compareSlots"></div>
+  </div>
+  <div style="display:flex;gap:.75rem;align-items:center">
+    <button class="btn-primary" style="padding:.65rem 1.35rem;font-size:.85rem" onclick="showCompare()">Compare Now →</button>
+    <button class="btn-sm btn-view" onclick="clearCompare()">Clear</button>
+  </div>
+</div>
 
 <!-- TOAST -->
 <div class="toast" id="toast" role="alert" aria-live="polite">
@@ -376,9 +562,9 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
 </div>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="modal" onclick="modalOverlayClick(event)">
+<div class="modal-overlay" id="modal" onclick="modalOverlayClick(event)" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal">
-    <div class="modal-icon" id="modalIcon">🎉</div>
+    <div class="modal-icon" id="modalIcon" aria-hidden="true">🎉</div>
     <h2 id="modalTitle">Success!</h2>
     <p id="modalDesc">Your action was completed successfully.</p>
     <div class="modal-btns">
@@ -388,29 +574,64 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
   </div>
 </div>
 
+<!-- SHORTCUTS MODAL -->
+<div class="modal-overlay" id="shortcutsModal" onclick="if(event.target===this)closeShortcutsModal()" role="dialog" aria-label="Keyboard shortcuts">
+  <div class="modal" style="max-width:520px;text-align:left">
+    <h2 style="font-family:var(--font-display);margin-bottom:.25rem">⌨️ Keyboard Shortcuts</h2>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:0">Speed up your workflow</p>
+    <div class="shortcuts-grid">
+      <div class="sc-row"><span class="sc-label">Focus search</span><span><kbd class="kbd">/</kbd></span></div>
+      <div class="sc-row"><span class="sc-label">Go home</span><span><kbd class="kbd">H</kbd></span></div>
+      <div class="sc-row"><span class="sc-label">Browse projects</span><span><kbd class="kbd">P</kbd></span></div>
+      <div class="sc-row"><span class="sc-label">Open wishlist</span><span><kbd class="kbd">W</kbd></span></div>
+      <div class="sc-row"><span class="sc-label">Toggle theme</span><span><kbd class="kbd">T</kbd></span></div>
+      <div class="sc-row"><span class="sc-label">Account menu</span><span><kbd class="kbd">A</kbd></span></div>
+      <div class="sc-row"><span class="sc-label">Close modal</span><span><kbd class="kbd">Esc</kbd></span></div>
+      <div class="sc-row"><span class="sc-label">Custom project</span><span><kbd class="kbd">C</kbd></span></div>
+    </div>
+    <button class="btn-secondary" style="width:100%;margin-top:1.5rem" onclick="closeShortcutsModal()">Close</button>
+  </div>
+</div>
+
+<!-- PURCHASE HISTORY MODAL -->
+<div class="modal-overlay" id="phModal" onclick="if(event.target===this)closePHModal()" role="dialog" aria-label="Purchase history">
+  <div class="modal" style="max-width:560px;text-align:left;padding:2rem">
+    <h2 style="font-family:var(--font-display);margin-bottom:1.5rem">📦 Purchase History</h2>
+    <div id="phList"></div>
+    <button class="btn-secondary" style="width:100%;margin-top:1rem" onclick="closePHModal()">Close</button>
+  </div>
+</div>
+
+<!-- COMPARE MODAL -->
+<div class="modal-overlay" id="compareModal" onclick="if(event.target===this)document.getElementById('compareModal').classList.remove('open')" role="dialog" aria-label="Compare projects">
+  <div class="modal" style="max-width:800px;width:95%;text-align:left;padding:2rem;max-height:90vh;overflow-y:auto">
+    <h2 style="font-family:var(--font-display);margin-bottom:1.5rem">⚖️ Project Comparison</h2>
+    <div id="compareContent"></div>
+    <button class="btn-secondary" style="margin-top:1.5rem" onclick="document.getElementById('compareModal').classList.remove('open')">Close</button>
+  </div>
+</div>
+
 <!-- ======================================================
      HOME PAGE
      ====================================================== -->
 <div class="page active" id="page-home">
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-grid"></div>
-    <div class="badge">⚡ 500+ Premium Projects · Instant Download</div>
+  <section class="hero" aria-label="Hero section">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="badge" role="text">⚡ 500+ Premium Projects · Instant Download</div>
     <h1>Premium <span>Ready-Made Projects</span><br>for Students &amp; Developers</h1>
     <p>Buy instantly, download immediately, and get expert support. From final year projects to production-grade SaaS apps — all in one place.</p>
     <div class="hero-btns">
       <button class="btn-primary" onclick="showPage('projects')">🚀 Browse Projects</button>
       <button class="btn-secondary" onclick="showPage('custom')">✨ Request Custom Project</button>
     </div>
-    <div class="stats">
-      <div class="stat"><div class="stat-num" data-count="500" data-suffix="+">0</div><div class="stat-label">Projects Sold</div></div>
-      <div class="stat"><div class="stat-num" data-count="2000" data-suffix="+">0</div><div class="stat-label">Happy Clients</div></div>
-      <div class="stat"><div class="stat-num" data-count="50" data-suffix="+">0</div><div class="stat-label">Categories</div></div>
-      <div class="stat"><div class="stat-num" data-count="24" data-suffix="/7">0</div><div class="stat-label">Support</div></div>
+    <div class="stats" role="list" aria-label="Store statistics">
+      <div class="stat" role="listitem"><div class="stat-num" data-count="500" data-suffix="+">0</div><div class="stat-label">Projects Sold</div></div>
+      <div class="stat" role="listitem"><div class="stat-num" data-count="2000" data-suffix="+">0</div><div class="stat-label">Happy Clients</div></div>
+      <div class="stat" role="listitem"><div class="stat-num" data-count="50" data-suffix="+">0</div><div class="stat-label">Categories</div></div>
+      <div class="stat" role="listitem"><div class="stat-num" data-count="24" data-suffix="/7">0</div><div class="stat-label">Support</div></div>
     </div>
-    <div class="floating-wrap">
+    <div class="floating-wrap" aria-hidden="true">
       <div class="f-card"><div class="f-icon" style="background:rgba(123,110,246,.18)">🤖</div><div class="f-card-info"><small>AI Project</small><strong>ChatBot SaaS</strong></div></div>
       <div class="f-card"><div class="f-icon" style="background:rgba(0,229,255,.15)">🛒</div><div class="f-card-info"><small>Web App</small><strong>E-Commerce</strong></div></div>
       <div class="f-card"><div class="f-icon" style="background:rgba(245,166,35,.15)">📱</div><div class="f-card-info"><small>Android</small><strong>Food Delivery</strong></div></div>
@@ -418,35 +639,35 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
   </section>
 
   <!-- CATEGORIES -->
-  <section class="section" style="padding-top:1.5rem">
+  <section class="section" style="padding-top:1.5rem" aria-labelledby="cat-heading">
     <div class="container">
       <div class="sec-head reveal">
         <div>
           <div class="section-tag">Browse by Category</div>
-          <div class="section-title">Find Your <span class="g-text">Perfect Project</span></div>
+          <div class="section-title" id="cat-heading">Find Your <span class="g-text">Perfect Project</span></div>
         </div>
         <button class="view-all" onclick="showPage('projects')">View All →</button>
       </div>
-      <div class="cat-grid reveal reveal-d1">
-        <div class="cat-pill" onclick="filterAndGo('AI')"><div class="cat-emoji">🤖</div><div class="cat-name">AI Projects</div><div class="cat-count">45 projects</div></div>
-        <div class="cat-pill" onclick="filterAndGo('Web')"><div class="cat-emoji">🌐</div><div class="cat-name">Web Apps</div><div class="cat-count">120 projects</div></div>
-        <div class="cat-pill" onclick="filterAndGo('Android')"><div class="cat-emoji">📱</div><div class="cat-name">Android Apps</div><div class="cat-count">60 projects</div></div>
-        <div class="cat-pill" onclick="filterAndGo('Python')"><div class="cat-emoji">🐍</div><div class="cat-name">Python Projects</div><div class="cat-count">80 projects</div></div>
-        <div class="cat-pill" onclick="filterAndGo('Java')"><div class="cat-emoji">☕</div><div class="cat-name">Java Projects</div><div class="cat-count">55 projects</div></div>
-        <div class="cat-pill" onclick="filterAndGo('Final Year')"><div class="cat-emoji">🎓</div><div class="cat-name">Final Year</div><div class="cat-count">90 projects</div></div>
-        <div class="cat-pill" onclick="filterAndGo('React')"><div class="cat-emoji">⚛️</div><div class="cat-name">React Apps</div><div class="cat-count">40 projects</div></div>
-        <div class="cat-pill" onclick="showPage('custom')"><div class="cat-emoji">🛠️</div><div class="cat-name">Custom Built</div><div class="cat-count">On Request</div></div>
+      <div class="cat-grid reveal reveal-d1" role="list">
+        <div class="cat-pill" role="listitem" onclick="filterAndGo('AI')" tabindex="0" onkeydown="if(event.key==='Enter')filterAndGo('AI')"><div class="cat-emoji" aria-hidden="true">🤖</div><div class="cat-name">AI Projects</div><div class="cat-count">45 projects</div></div>
+        <div class="cat-pill" role="listitem" onclick="filterAndGo('Web')" tabindex="0" onkeydown="if(event.key==='Enter')filterAndGo('Web')"><div class="cat-emoji" aria-hidden="true">🌐</div><div class="cat-name">Web Apps</div><div class="cat-count">120 projects</div></div>
+        <div class="cat-pill" role="listitem" onclick="filterAndGo('Android')" tabindex="0"><div class="cat-emoji" aria-hidden="true">📱</div><div class="cat-name">Android Apps</div><div class="cat-count">60 projects</div></div>
+        <div class="cat-pill" role="listitem" onclick="filterAndGo('Python')" tabindex="0"><div class="cat-emoji" aria-hidden="true">🐍</div><div class="cat-name">Python Projects</div><div class="cat-count">80 projects</div></div>
+        <div class="cat-pill" role="listitem" onclick="filterAndGo('Java')" tabindex="0"><div class="cat-emoji" aria-hidden="true">☕</div><div class="cat-name">Java Projects</div><div class="cat-count">55 projects</div></div>
+        <div class="cat-pill" role="listitem" onclick="filterAndGo('Final Year')" tabindex="0"><div class="cat-emoji" aria-hidden="true">🎓</div><div class="cat-name">Final Year</div><div class="cat-count">90 projects</div></div>
+        <div class="cat-pill" role="listitem" onclick="filterAndGo('React')" tabindex="0"><div class="cat-emoji" aria-hidden="true">⚛️</div><div class="cat-name">React Apps</div><div class="cat-count">40 projects</div></div>
+        <div class="cat-pill" role="listitem" onclick="showPage('custom')" tabindex="0"><div class="cat-emoji" aria-hidden="true">🛠️</div><div class="cat-name">Custom Built</div><div class="cat-count">On Request</div></div>
       </div>
     </div>
   </section>
 
-  <!-- FEATURED PROJECTS -->
-  <section class="section" style="padding-top:0">
+  <!-- FEATURED -->
+  <section class="section" style="padding-top:0" aria-labelledby="featured-heading">
     <div class="container">
       <div class="sec-head reveal">
         <div>
           <div class="section-tag">Featured Projects</div>
-          <div class="section-title">Bestselling <span class="g-text">Source Code</span></div>
+          <div class="section-title" id="featured-heading">Bestselling <span class="g-text">Source Code</span></div>
         </div>
         <button class="view-all" onclick="showPage('projects')">View All →</button>
       </div>
@@ -455,49 +676,49 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
   </section>
 
   <!-- TRUST BANNER -->
-  <section style="padding:0 1.5rem 2rem">
+  <section style="padding:0 1.5rem 2rem" aria-label="Trust indicators">
     <div class="container">
       <div style="background:linear-gradient(135deg,rgba(123,110,246,.12),rgba(0,229,255,.06));
         border:1px solid rgba(123,110,246,.2);border-radius:var(--radius);padding:2rem;
         display:flex;flex-wrap:wrap;gap:2rem;justify-content:space-around;align-items:center" class="reveal">
-        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem">⚡</div><div style="font-weight:700;font-size:.875rem">Instant Download</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">After payment</div></div>
-        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem">🔒</div><div style="font-weight:700;font-size:.875rem">Secure Payment</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">Razorpay verified</div></div>
-        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem">💬</div><div style="font-weight:700;font-size:.875rem">WhatsApp Support</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">30 days free</div></div>
-        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem">📄</div><div style="font-weight:700;font-size:.875rem">Full Documentation</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">Every project</div></div>
-        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem">♾️</div><div style="font-weight:700;font-size:.875rem">Commercial License</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">Personal + commercial</div></div>
+        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem" aria-hidden="true">⚡</div><div style="font-weight:700;font-size:.875rem">Instant Download</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">After payment</div></div>
+        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem" aria-hidden="true">🔒</div><div style="font-weight:700;font-size:.875rem">Secure Payment</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">Razorpay verified</div></div>
+        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem" aria-hidden="true">💬</div><div style="font-weight:700;font-size:.875rem">WhatsApp Support</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">30 days free</div></div>
+        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem" aria-hidden="true">📄</div><div style="font-weight:700;font-size:.875rem">Full Documentation</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">Every project</div></div>
+        <div style="text-align:center"><div style="font-size:1.5rem;margin-bottom:.35rem" aria-hidden="true">♾️</div><div style="font-weight:700;font-size:.875rem">Commercial License</div><div style="color:var(--muted);font-size:.75rem;margin-top:.2rem">Personal + commercial</div></div>
       </div>
     </div>
   </section>
 
   <!-- TESTIMONIALS -->
-  <section class="section" style="background:rgba(255,255,255,.018);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <section class="section" style="background:rgba(255,255,255,.018);border-top:1px solid var(--border);border-bottom:1px solid var(--border)" aria-labelledby="review-heading">
     <div class="container">
       <div style="text-align:center;margin-bottom:2.75rem" class="reveal">
         <div class="section-tag">Customer Reviews</div>
-        <div class="section-title">Trusted by <span class="g-text">Developers Worldwide</span></div>
+        <div class="section-title" id="review-heading">Trusted by <span class="g-text">Developers Worldwide</span></div>
       </div>
       <div class="grid-3 reveal reveal-d1">
-        <div class="t-card"><div class="t-stars">★★★★★</div><div class="t-text">"Bought the E-Commerce source code. Worked perfectly out of the box. Documentation is excellent and WhatsApp support was instant. 100% recommended!"</div><div class="t-author"><div class="t-avatar" style="background:rgba(123,110,246,.2);color:var(--primary)">RK</div><div><div class="t-name">Rahul Kumar</div><div class="t-role">Full Stack Developer, Bangalore</div></div></div></div>
-        <div class="t-card"><div class="t-stars">★★★★★</div><div class="t-text">"Got my final year project submitted successfully. The AI Face Recognition project was exactly what I needed — clean code, great docs, and fast support!"</div><div class="t-author"><div class="t-avatar" style="background:rgba(0,229,255,.15);color:var(--accent)">PS</div><div><div class="t-name">Priya Singh</div><div class="t-role">CS Student, VIT Vellore</div></div></div></div>
-        <div class="t-card"><div class="t-stars">★★★★★</div><div class="t-text">"The custom project request was handled professionally. Got a full Android food delivery app in 4 days at a great price. Will order again!"</div><div class="t-author"><div class="t-avatar" style="background:rgba(245,166,35,.15);color:#F5A623">AM</div><div><div class="t-name">Arjun Mehta</div><div class="t-role">Android Developer, Mumbai</div></div></div></div>
+        <div class="t-card"><div class="t-stars" aria-label="5 stars">★★★★★</div><div class="t-text">"Bought the E-Commerce source code. Worked perfectly out of the box. Documentation is excellent and WhatsApp support was instant. 100% recommended!"</div><div class="t-author"><div class="t-avatar" style="background:rgba(123,110,246,.2);color:var(--primary)" aria-hidden="true">RK</div><div><div class="t-name">Rahul Kumar</div><div class="t-role">Full Stack Developer, Bangalore</div></div></div></div>
+        <div class="t-card"><div class="t-stars" aria-label="5 stars">★★★★★</div><div class="t-text">"Got my final year project submitted successfully. The AI Face Recognition project was exactly what I needed — clean code, great docs, and fast support!"</div><div class="t-author"><div class="t-avatar" style="background:rgba(0,229,255,.15);color:var(--accent)" aria-hidden="true">PS</div><div><div class="t-name">Priya Singh</div><div class="t-role">CS Student, VIT Vellore</div></div></div></div>
+        <div class="t-card"><div class="t-stars" aria-label="5 stars">★★★★★</div><div class="t-text">"The custom project request was handled professionally. Got a full Android food delivery app in 4 days at a great price. Will order again!"</div><div class="t-author"><div class="t-avatar" style="background:rgba(245,166,35,.15);color:#F5A623" aria-hidden="true">AM</div><div><div class="t-name">Arjun Mehta</div><div class="t-role">Android Developer, Mumbai</div></div></div></div>
       </div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section class="section">
+  <section class="section" aria-labelledby="faq-heading">
     <div class="container">
       <div style="text-align:center;margin-bottom:2.75rem" class="reveal">
         <div class="section-tag">FAQ</div>
-        <div class="section-title">Frequently Asked <span class="g-text">Questions</span></div>
+        <div class="section-title" id="faq-heading">Frequently Asked <span class="g-text">Questions</span></div>
       </div>
       <div style="max-width:700px;margin:0 auto" class="reveal reveal-d1">
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Do I get the full source code?</span><span class="faq-icon">+</span></div><div class="faq-a">Yes! Every project includes 100% complete, well-commented source code. You own it forever and can modify it however you need. No encrypted or obfuscated files — just clean, readable code.</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How fast do I get my project after payment?</span><span class="faq-icon">+</span></div><div class="faq-a">Delivery is instant! After successful payment via Razorpay you get immediate access to download your project. A download link is also sent to your email within 2 minutes.</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Do you provide support after purchase?</span><span class="faq-icon">+</span></div><div class="faq-a">Absolutely. We provide free WhatsApp support for 30 days after purchase to help with setup, bugs, environment configuration, and basic customization questions.</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Can I use the project commercially?</span><span class="faq-icon">+</span></div><div class="faq-a">Yes! All projects come with a personal + commercial license. You can use them in client projects, deploy them commercially, and modify them freely. Reselling the source code as-is is not permitted.</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What payment methods do you accept?</span><span class="faq-icon">+</span></div><div class="faq-a">We use Razorpay which supports UPI (PhonePe, GPay, Paytm), credit/debit cards, net banking, digital wallets, and EMI options. All payments are 100% secure.</div></div>
-        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>What if the project doesn't work as described?</span><span class="faq-icon">+</span></div><div class="faq-a">We offer a refund if the project is fundamentally different from its description or completely non-functional after our support team's assistance. Contact us within 7 days of purchase.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter')toggleFaq(this)"><span>Do I get the full source code?</span><span class="faq-icon" aria-hidden="true">+</span></div><div class="faq-a">Yes! Every project includes 100% complete, well-commented source code. You own it forever and can modify it however you need. No encrypted or obfuscated files — just clean, readable code.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter')toggleFaq(this)"><span>How fast do I get my project after payment?</span><span class="faq-icon" aria-hidden="true">+</span></div><div class="faq-a">Delivery is instant! After successful payment via Razorpay you get immediate access to download your project. A download link is also sent to your email within 2 minutes.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter')toggleFaq(this)"><span>Do you provide support after purchase?</span><span class="faq-icon" aria-hidden="true">+</span></div><div class="faq-a">Absolutely. We provide free WhatsApp support for 30 days after purchase to help with setup, bugs, environment configuration, and basic customization questions.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter')toggleFaq(this)"><span>Can I use the project commercially?</span><span class="faq-icon" aria-hidden="true">+</span></div><div class="faq-a">Yes! All projects come with a personal + commercial license. You can use them in client projects, deploy them commercially, and modify them freely. Reselling the source code as-is is not permitted.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter')toggleFaq(this)"><span>What payment methods do you accept?</span><span class="faq-icon" aria-hidden="true">+</span></div><div class="faq-a">We use Razorpay which supports UPI (PhonePe, GPay, Paytm), credit/debit cards, net banking, digital wallets, and EMI options. All payments are 100% secure.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter')toggleFaq(this)"><span>What if the project doesn't work as described?</span><span class="faq-icon" aria-hidden="true">+</span></div><div class="faq-a">We offer a refund if the project is fundamentally different from its description or completely non-functional after our support team's assistance. Contact us within 7 days of purchase.</div></div>
       </div>
     </div>
   </section>
@@ -527,38 +748,117 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
   <section class="section" style="padding-top:5.5rem">
     <div class="container">
       <div class="section-tag">Marketplace</div>
-      <div class="section-title" style="margin-bottom:1.75rem">Browse All <span class="g-text">Projects</span></div>
-      <div class="search-bar">
-        <span style="color:var(--muted);font-size:1.1rem">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search projects, technologies, categories..." oninput="filterProjects()" aria-label="Search projects">
+      <div class="section-title" style="margin-bottom:1.25rem">Browse All <span class="g-text">Projects</span></div>
+
+      <!-- SEARCH with suggestions -->
+      <div class="search-wrap">
+        <div class="search-bar">
+          <span style="color:var(--muted);font-size:1.1rem" aria-hidden="true">🔍</span>
+          <input type="search" id="searchInput" placeholder="Search projects, technologies… (press / to focus)" oninput="filterProjects();showSuggestions()" onblur="setTimeout(hideSuggestions,200)" aria-label="Search projects" autocomplete="off">
+          <span style="color:var(--muted);font-size:.75rem;white-space:nowrap"><kbd class="kbd">/</kbd></span>
+        </div>
+        <div class="search-suggestions" id="searchSuggestions" role="listbox" aria-label="Search suggestions"></div>
       </div>
-      <div class="filters" id="filterTags">
-        <span class="tag active" onclick="setFilter('')">All</span>
-        <span class="tag" onclick="setFilter('AI')">🤖 AI</span>
-        <span class="tag" onclick="setFilter('Web')">🌐 Web Apps</span>
-        <span class="tag" onclick="setFilter('Android')">📱 Android</span>
-        <span class="tag" onclick="setFilter('Python')">🐍 Python</span>
-        <span class="tag" onclick="setFilter('Java')">☕ Java</span>
-        <span class="tag" onclick="setFilter('Final Year')">🎓 Final Year</span>
-        <span class="tag" onclick="setFilter('React')">⚛️ React</span>
+
+      <!-- FILTER TAGS -->
+      <div class="filters" id="filterTags" role="group" aria-label="Category filters">
+        <span class="tag active" onclick="setFilter('')" role="option" tabindex="0">All</span>
+        <span class="tag" onclick="setFilter('AI')" role="option" tabindex="0">🤖 AI</span>
+        <span class="tag" onclick="setFilter('Web')" role="option" tabindex="0">🌐 Web Apps</span>
+        <span class="tag" onclick="setFilter('Android')" role="option" tabindex="0">📱 Android</span>
+        <span class="tag" onclick="setFilter('Python')" role="option" tabindex="0">🐍 Python</span>
+        <span class="tag" onclick="setFilter('Java')" role="option" tabindex="0">☕ Java</span>
+        <span class="tag" onclick="setFilter('Final Year')" role="option" tabindex="0">🎓 Final Year</span>
+        <span class="tag" onclick="setFilter('React')" role="option" tabindex="0">⚛️ React</span>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem">
-        <span style="font-size:.82rem;color:var(--muted)" id="resultCount">Showing 20 projects</span>
-        <select class="form-control-sm" onchange="sortProjects(this.value)" aria-label="Sort projects">
-          <option value="default">Sort: Default</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-          <option value="rating">Top Rated</option>
-          <option value="newest">Newest First</option>
-        </select>
+
+      <!-- ADVANCED FILTERS TOGGLE -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
+        <button class="btn-sm btn-view" onclick="toggleAdvFilters()" id="advFiltersBtn" aria-expanded="false">⚙ Advanced Filters</button>
+        <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+          <span style="font-size:.82rem;color:var(--muted)" id="resultCount" aria-live="polite">Showing 20 projects</span>
+          <select class="form-control-sm" onchange="sortProjects(this.value)" aria-label="Sort projects">
+            <option value="default">Sort: Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+            <option value="newest">Newest First</option>
+          </select>
+        </div>
       </div>
+
+      <!-- ADVANCED FILTERS PANEL -->
+      <div class="adv-filters" id="advFiltersPanel" aria-label="Advanced filter options">
+        <div class="af-grid">
+          <div class="af-group">
+            <label>Price Range (₹)</label>
+            <div class="price-range">
+              <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted)"><span>₹<span id="priceMinLabel">0</span></span><span>₹<span id="priceMaxLabel">3,999</span></span></div>
+              <input type="range" class="range-input" id="priceMin" min="0" max="3999" value="0" oninput="updatePriceFilter()" aria-label="Minimum price">
+              <input type="range" class="range-input" id="priceMax" min="0" max="3999" value="3999" oninput="updatePriceFilter()" aria-label="Maximum price">
+            </div>
+          </div>
+          <div class="af-group">
+            <label>Minimum Rating</label>
+            <div class="rating-filter-stars">
+              <span class="rf-star" onclick="setRatingFilter(0)" id="rfs-0">Any</span>
+              <span class="rf-star" onclick="setRatingFilter(4)" id="rfs-4">4★+</span>
+              <span class="rf-star" onclick="setRatingFilter(4.5)" id="rfs-45">4.5★+</span>
+              <span class="rf-star" onclick="setRatingFilter(4.8)" id="rfs-48">4.8★+</span>
+            </div>
+          </div>
+          <div class="af-group">
+            <label>Difficulty Level</label>
+            <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+              <span class="tech-check" onclick="toggleDiffFilter(this,'Beginner')">🟢 Beginner</span>
+              <span class="tech-check" onclick="toggleDiffFilter(this,'Intermediate')">🟡 Intermediate</span>
+              <span class="tech-check" onclick="toggleDiffFilter(this,'Advanced')">🔴 Advanced</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:1rem">
+          <div class="af-group">
+            <label>Technology</label>
+            <div class="tech-checkboxes" id="techFilters">
+              <span class="tech-check" onclick="toggleTechFilter(this,'Python')">Python</span>
+              <span class="tech-check" onclick="toggleTechFilter(this,'React')">React</span>
+              <span class="tech-check" onclick="toggleTechFilter(this,'Node.js')">Node.js</span>
+              <span class="tech-check" onclick="toggleTechFilter(this,'Kotlin')">Kotlin</span>
+              <span class="tech-check" onclick="toggleTechFilter(this,'Java')">Java</span>
+              <span class="tech-check" onclick="toggleTechFilter(this,'Flutter')">Flutter</span>
+              <span class="tech-check" onclick="toggleTechFilter(this,'Firebase')">Firebase</span>
+              <span class="tech-check" onclick="toggleTechFilter(this,'Next.js')">Next.js</span>
+              <span class="tech-check" onclick="toggleTechFilter(this,'Django')">Django</span>
+              <span class="tech-check" onclick="toggleTechFilter(this,'Spring Boot')">Spring Boot</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:.75rem;display:flex;gap:.75rem">
+          <button class="btn-sm btn-buy" onclick="applyAdvFilters()">Apply Filters</button>
+          <button class="btn-sm btn-view" onclick="resetAdvFilters()">Reset</button>
+        </div>
+      </div>
+
       <div class="grid-3" id="projectsGrid"></div>
-      <div class="pagination">
-        <button class="pg-btn active">1</button>
+      <div class="pagination" role="navigation" aria-label="Pagination">
+        <button class="pg-btn active" aria-current="page">1</button>
         <button class="pg-btn">2</button>
         <button class="pg-btn">3</button>
-        <button class="pg-btn" style="width:auto;padding:0 .9rem">›</button>
+        <button class="pg-btn" style="width:auto;padding:0 .9rem" aria-label="Next page">›</button>
       </div>
+    </div>
+  </section>
+</div>
+
+<!-- ======================================================
+     WISHLIST PAGE
+     ====================================================== -->
+<div class="page" id="page-wishlist">
+  <section class="section" style="padding-top:5.5rem">
+    <div class="container">
+      <div class="section-tag">Saved Projects</div>
+      <div class="section-title" style="margin-bottom:2rem">Your <span class="g-text">Wishlist</span></div>
+      <div id="wishlistContent"></div>
     </div>
   </section>
 </div>
@@ -569,13 +869,13 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
 <div class="page" id="page-detail">
   <section class="section" style="padding-top:5.5rem">
     <div class="container">
-      <div class="breadcrumb">
-        <span onclick="showPage('home')">Home</span>
-        <span class="sep">›</span>
-        <span onclick="showPage('projects')">Projects</span>
-        <span class="sep">›</span>
-        <span id="detailBreadcrumb" style="color:#fff">Project</span>
-      </div>
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <span onclick="showPage('home')" tabindex="0">Home</span>
+        <span class="sep" aria-hidden="true">›</span>
+        <span onclick="showPage('projects')" tabindex="0">Projects</span>
+        <span class="sep" aria-hidden="true">›</span>
+        <span id="detailBreadcrumb" style="color:var(--text)" aria-current="page">Project</span>
+      </nav>
       <div class="detail-grid" id="detailContent"></div>
     </div>
   </section>
@@ -613,27 +913,27 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
       <div class="form-card">
         <div class="form-row">
           <div class="form-group">
-            <label>Full Name *</label>
-            <input type="text" class="form-control" id="cf-name" placeholder="Rahul Kumar" required>
+            <label for="cf-name">Full Name *</label>
+            <input type="text" class="form-control" id="cf-name" placeholder="Rahul Kumar" required autocomplete="name">
           </div>
           <div class="form-group">
-            <label>Email Address *</label>
-            <input type="email" class="form-control" id="cf-email" placeholder="you@example.com" required>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>WhatsApp Number</label>
-            <input type="tel" class="form-control" id="cf-wa" placeholder="+91 98765 43210">
-          </div>
-          <div class="form-group">
-            <label>Project Title *</label>
-            <input type="text" class="form-control" id="cf-title" placeholder="E-Commerce App with AI Recommendations">
+            <label for="cf-email">Email Address *</label>
+            <input type="email" class="form-control" id="cf-email" placeholder="you@example.com" required autocomplete="email">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Technology Stack</label>
+            <label for="cf-wa">WhatsApp Number</label>
+            <input type="tel" class="form-control" id="cf-wa" placeholder="+91 98765 43210" autocomplete="tel">
+          </div>
+          <div class="form-group">
+            <label for="cf-title">Project Title *</label>
+            <input type="text" class="form-control" id="cf-title" placeholder="E-Commerce App with AI Recommendations" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cf-tech">Technology Stack</label>
             <select class="form-control" id="cf-tech">
               <option>React + Node.js</option>
               <option>Next.js + Prisma + PostgreSQL</option>
@@ -648,7 +948,7 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
             </select>
           </div>
           <div class="form-group">
-            <label>Budget Range (INR)</label>
+            <label for="cf-budget">Budget Range (INR)</label>
             <select class="form-control" id="cf-budget">
               <option>₹1,000 – ₹3,000</option>
               <option>₹3,000 – ₹7,000</option>
@@ -661,11 +961,11 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Deadline</label>
+            <label for="cf-deadline">Deadline</label>
             <input type="date" class="form-control" id="cf-deadline">
           </div>
           <div class="form-group">
-            <label>Urgency Level</label>
+            <label for="cf-priority">Urgency Level</label>
             <select class="form-control" id="cf-priority">
               <option>Normal (7–14 days)</option>
               <option>Urgent (3–5 days) +20%</option>
@@ -674,18 +974,14 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
           </div>
         </div>
         <div class="form-group">
-          <label>Project Description *</label>
-          <textarea class="form-control" id="cf-desc" placeholder="Describe your project in detail. Include: number of pages/screens, key features, database needs, third-party APIs, user roles, design style, and anything else important..."></textarea>
+          <label for="cf-desc">Project Description *</label>
+          <textarea class="form-control" id="cf-desc" placeholder="Describe your project in detail. Include: number of pages/screens, key features, database needs, third-party APIs, user roles, design style, and anything else important..." required></textarea>
         </div>
         <div class="form-group">
-          <label>How did you find us?</label>
+          <label for="cf-source">How did you find us?</label>
           <select class="form-control" id="cf-source">
-            <option>Google Search</option>
-            <option>Instagram</option>
-            <option>WhatsApp</option>
-            <option>Friend Referral</option>
-            <option>YouTube</option>
-            <option>Other</option>
+            <option>Google Search</option><option>Instagram</option><option>WhatsApp</option>
+            <option>Friend Referral</option><option>YouTube</option><option>Other</option>
           </select>
         </div>
         <button class="btn-primary" style="width:100%;padding:1.1rem;font-size:1rem;margin-top:.75rem;letter-spacing:-.2px" onclick="submitCustomForm()">
@@ -708,30 +1004,12 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
         <div class="section-title">Building the Future of <span class="g-text">Code Commerce</span></div>
         <p style="color:var(--muted);max-width:580px;margin:1rem auto;line-height:1.75">ProjectStore is India's leading marketplace for premium software projects. We help students ace final year deadlines and developers ship production-grade products faster.</p>
       </div>
-
       <div class="grid-2 reveal" style="margin-bottom:3rem">
-        <div class="p-card" style="padding:2.25rem">
-          <div style="font-size:2.5rem;margin-bottom:1.1rem">🎯</div>
-          <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.85rem">Our Mission</h3>
-          <p style="color:var(--muted);font-size:.9rem;line-height:1.75">To democratize software development by providing affordable, high-quality source code that empowers students to learn and developers to build faster without reinventing the wheel.</p>
-        </div>
-        <div class="p-card" style="padding:2.25rem">
-          <div style="font-size:2.5rem;margin-bottom:1.1rem">💡</div>
-          <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.85rem">What We Offer</h3>
-          <p style="color:var(--muted);font-size:.9rem;line-height:1.75">500+ production-ready projects across AI/ML, Web Development, Android, Python, Java, and more — plus custom development services where our senior developers build exactly what you envision.</p>
-        </div>
-        <div class="p-card" style="padding:2.25rem">
-          <div style="font-size:2.5rem;margin-bottom:1.1rem">🏆</div>
-          <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.85rem">Our Standards</h3>
-          <p style="color:var(--muted);font-size:.9rem;line-height:1.75">Every project is reviewed by senior engineers before listing. We ensure clean code architecture, comprehensive documentation, and working demos for all projects.</p>
-        </div>
-        <div class="p-card" style="padding:2.25rem">
-          <div style="font-size:2.5rem;margin-bottom:1.1rem">🌍</div>
-          <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.85rem">Our Community</h3>
-          <p style="color:var(--muted);font-size:.9rem;line-height:1.75">Trusted by 2000+ students and developers across India, the US, UAE, UK, and 30+ other countries. Our WhatsApp community has 5000+ active members sharing tips and resources.</p>
-        </div>
+        <div class="p-card" style="padding:2.25rem"><div style="font-size:2.5rem;margin-bottom:1.1rem">🎯</div><h3 style="font-family:var(--font-display);font-size:1.25rem;font-weight:800;margin-bottom:.85rem">Our Mission</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.75">To democratize software development by providing affordable, high-quality source code that empowers students to learn and developers to build faster without reinventing the wheel.</p></div>
+        <div class="p-card" style="padding:2.25rem"><div style="font-size:2.5rem;margin-bottom:1.1rem">💡</div><h3 style="font-family:var(--font-display);font-size:1.25rem;font-weight:800;margin-bottom:.85rem">What We Offer</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.75">500+ production-ready projects across AI/ML, Web Development, Android, Python, Java, and more — plus custom development services where our senior developers build exactly what you envision.</p></div>
+        <div class="p-card" style="padding:2.25rem"><div style="font-size:2.5rem;margin-bottom:1.1rem">🏆</div><h3 style="font-family:var(--font-display);font-size:1.25rem;font-weight:800;margin-bottom:.85rem">Our Standards</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.75">Every project is reviewed by senior engineers before listing. We ensure clean code architecture, comprehensive documentation, and working demos for all projects.</p></div>
+        <div class="p-card" style="padding:2.25rem"><div style="font-size:2.5rem;margin-bottom:1.1rem">🌍</div><h3 style="font-family:var(--font-display);font-size:1.25rem;font-weight:800;margin-bottom:.85rem">Our Community</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.75">Trusted by 2000+ students and developers across India, the US, UAE, UK, and 30+ other countries. Our WhatsApp community has 5000+ active members sharing tips and resources.</p></div>
       </div>
-
       <div class="reveal" style="margin-bottom:1.5rem">
         <div class="section-tag">How It Works</div>
         <div class="section-title" style="margin-bottom:2rem">Our Simple <span class="g-text">Process</span></div>
@@ -742,33 +1020,11 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
           <div class="process-step"><div class="step-num">4</div><div class="step-body"><h4>30-Day WhatsApp Support</h4><p>Our expert team helps you with setup, configuration, bug fixes, and customization via WhatsApp for 30 days after purchase.</p></div></div>
         </div>
       </div>
-
       <div class="reveal" style="margin-top:3rem">
         <div class="section-tag">Technologies</div>
         <div class="section-title" style="margin-bottom:1.5rem">We Work With <span class="g-text">Everything</span></div>
         <div style="display:flex;flex-wrap:wrap;gap:.6rem">
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">React</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Next.js</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Node.js</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Python</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Django</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">FastAPI</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Java</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Spring Boot</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Kotlin</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Flutter</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">TensorFlow</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">PyTorch</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">OpenCV</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">MySQL</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">PostgreSQL</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">MongoDB</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Firebase</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Supabase</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Prisma</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Solidity</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Tailwind CSS</span>
-          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">GraphQL</span>
+          <span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">React</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Next.js</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Node.js</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Python</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Django</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">FastAPI</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Java</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Spring Boot</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Kotlin</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Flutter</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">TensorFlow</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">PyTorch</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">OpenCV</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">MySQL</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">PostgreSQL</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">MongoDB</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Firebase</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Supabase</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Prisma</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Solidity</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">Tailwind CSS</span><span class="t-badge" style="font-size:.82rem;padding:.45rem 1rem">GraphQL</span>
         </div>
       </div>
     </div>
@@ -787,61 +1043,24 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
         <p style="color:var(--muted);max-width:450px;margin:1rem auto;line-height:1.75">Reach out via WhatsApp for the fastest response. Our team is available 6 days a week.</p>
       </div>
       <div class="grid-2 reveal" style="margin-bottom:2.75rem">
-        <div class="contact-card">
-          <div class="contact-icon">💬</div>
-          <div>
-            <h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">WhatsApp Support</h4>
-            <p style="color:var(--muted);font-size:.875rem;line-height:1.65">Chat with us directly for instant help with projects, customization requests, or order support.</p>
-            <p style="font-size:.82rem;color:var(--muted);margin-top:.6rem">⏱ Usually replies in &lt; 15 minutes</p>
-            <button class="btn-primary" style="margin-top:1rem;padding:.65rem 1.35rem;font-size:.875rem" onclick="openWhatsApp('Hello ProjectStore! I need assistance with a project.')">Open WhatsApp Chat</button>
-          </div>
-        </div>
-        <div class="contact-card">
-          <div class="contact-icon">📧</div>
-          <div>
-            <h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">Email Support</h4>
-            <p style="color:var(--muted);font-size:.875rem;line-height:1.65">For detailed inquiries, bug reports, or refund requests. We respond within 4 business hours.</p>
-            <p style="color:var(--accent);font-size:.9rem;margin-top:.85rem;font-weight:600">support@projectstore.in</p>
-            <p style="font-size:.78rem;color:var(--muted);margin-top:.25rem">legal@projectstore.in · billing@projectstore.in</p>
-          </div>
-        </div>
-        <div class="contact-card">
-          <div class="contact-icon">🕐</div>
-          <div>
-            <h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">Business Hours (IST)</h4>
-            <div style="display:flex;flex-direction:column;gap:.4rem;margin-top:.6rem">
-              <div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:var(--muted)">Mon – Fri</span><span style="font-weight:600">9:00 AM – 8:00 PM</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:var(--muted)">Saturday</span><span style="font-weight:600">10:00 AM – 6:00 PM</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:var(--muted)">Sunday</span><span style="font-weight:600">Closed (WhatsApp only)</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="contact-card">
-          <div class="contact-icon">📍</div>
-          <div>
-            <h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">About Our Team</h4>
-            <p style="color:var(--muted);font-size:.875rem;line-height:1.65">Based in India with developers in Bangalore, Mumbai, and Hyderabad. We serve students and developers globally across 30+ countries.</p>
-            <p style="font-size:.82rem;color:var(--primary);margin-top:.75rem;font-weight:600">🇮🇳 Proudly Made in India</p>
-          </div>
-        </div>
+        <div class="contact-card"><div class="contact-icon" aria-hidden="true">💬</div><div><h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">WhatsApp Support</h4><p style="color:var(--muted);font-size:.875rem;line-height:1.65">Chat with us directly for instant help with projects, customization requests, or order support.</p><p style="font-size:.82rem;color:var(--muted);margin-top:.6rem">⏱ Usually replies in &lt; 15 minutes</p><button class="btn-primary" style="margin-top:1rem;padding:.65rem 1.35rem;font-size:.875rem" onclick="openWhatsApp('Hello ProjectStore! I need assistance with a project.')">Open WhatsApp Chat</button></div></div>
+        <div class="contact-card"><div class="contact-icon" aria-hidden="true">📧</div><div><h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">Email Support</h4><p style="color:var(--muted);font-size:.875rem;line-height:1.65">For detailed inquiries, bug reports, or refund requests. We respond within 4 business hours.</p><p style="color:var(--accent);font-size:.9rem;margin-top:.85rem;font-weight:600">support@projectstore.in</p><p style="font-size:.78rem;color:var(--muted);margin-top:.25rem">legal@projectstore.in · billing@projectstore.in</p></div></div>
+        <div class="contact-card"><div class="contact-icon" aria-hidden="true">🕐</div><div><h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">Business Hours (IST)</h4><div style="display:flex;flex-direction:column;gap:.4rem;margin-top:.6rem"><div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:var(--muted)">Mon – Fri</span><span style="font-weight:600">9:00 AM – 8:00 PM</span></div><div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:var(--muted)">Saturday</span><span style="font-weight:600">10:00 AM – 6:00 PM</span></div><div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:var(--muted)">Sunday</span><span style="font-weight:600">Closed (WhatsApp only)</span></div></div></div></div>
+        <div class="contact-card"><div class="contact-icon" aria-hidden="true">📍</div><div><h4 style="margin-bottom:.45rem;font-weight:700;font-size:1rem">About Our Team</h4><p style="color:var(--muted);font-size:.875rem;line-height:1.65">Based in India with developers in Bangalore, Mumbai, and Hyderabad. We serve students and developers globally across 30+ countries.</p><p style="font-size:.82rem;color:var(--primary);margin-top:.75rem;font-weight:600">🇮🇳 Proudly Made in India</p></div></div>
       </div>
       <div class="form-card reveal reveal-d1" style="max-width:600px">
-        <h3 style="font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;margin-bottom:1.75rem">Send a Message</h3>
+        <h3 style="font-family:var(--font-display);font-size:1.35rem;font-weight:800;margin-bottom:1.75rem">Send a Message</h3>
         <div class="form-row">
-          <div class="form-group"><label>Your Name</label><input type="text" class="form-control" id="cnt-name" placeholder="Rahul Kumar"></div>
-          <div class="form-group"><label>Email</label><input type="email" class="form-control" id="cnt-email" placeholder="you@example.com"></div>
+          <div class="form-group"><label for="cnt-name">Your Name</label><input type="text" class="form-control" id="cnt-name" placeholder="Rahul Kumar" autocomplete="name"></div>
+          <div class="form-group"><label for="cnt-email">Email</label><input type="email" class="form-control" id="cnt-email" placeholder="you@example.com" autocomplete="email"></div>
         </div>
-        <div class="form-group"><label>Subject</label>
+        <div class="form-group"><label for="cnt-subject">Subject</label>
           <select class="form-control" id="cnt-subject">
-            <option>Project Inquiry</option>
-            <option>Technical Support</option>
-            <option>Refund Request</option>
-            <option>Custom Project Quote</option>
-            <option>Partnership</option>
-            <option>Other</option>
+            <option>Project Inquiry</option><option>Technical Support</option><option>Refund Request</option>
+            <option>Custom Project Quote</option><option>Partnership</option><option>Other</option>
           </select>
         </div>
-        <div class="form-group"><label>Message</label><textarea class="form-control" id="cnt-msg" placeholder="Tell us how we can help..."></textarea></div>
+        <div class="form-group"><label for="cnt-msg">Message</label><textarea class="form-control" id="cnt-msg" placeholder="Tell us how we can help..."></textarea></div>
         <button class="btn-primary" style="width:100%;padding:.95rem;font-size:.95rem" onclick="submitContact()">Send Message</button>
       </div>
     </div>
@@ -855,17 +1074,14 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
   <section class="section" style="padding-top:5.5rem">
     <div class="container" style="max-width:780px">
       <div class="section-tag">Legal</div>
-      <h1 style="font-family:'Syne',sans-serif;font-size:2.75rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-1.5px">Terms of Service</h1>
+      <h1 style="font-family:var(--font-display);font-size:2.75rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-1.5px">Terms of Service</h1>
       <p style="color:var(--muted);font-size:.82rem;margin-bottom:3rem">Last updated: December 2024</p>
       <div style="display:flex;flex-direction:column;gap:2rem">
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">1. Acceptance of Terms</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">By accessing or using ProjectStore ("the Site"), you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree, please do not use our services.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">2. License &amp; Usage Rights</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">Upon purchase, you receive a non-exclusive, perpetual, worldwide license to use, modify, and deploy the source code in personal and commercial projects. You may NOT: resell the original source code without significant modification, redistribute or give it away, claim original authorship, or use it to create a competing marketplace.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">3. Payments &amp; Refund Policy</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">All payments are processed securely via Razorpay. Due to the digital and instantly downloadable nature of our products, refunds are only issued if: (a) the project is fundamentally different from its description, or (b) the project is completely non-functional after our support team's assistance. Refund requests must be submitted within 7 days of purchase.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">4. Intellectual Property</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">ProjectStore and its suppliers retain all intellectual property rights to the projects listed in the marketplace. Your purchase grants a usage license only. The "ProjectStore" brand, logo, and website design are protected trademarks.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">5. Disclaimer of Warranties</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">Projects are provided "as is" without warranty of any kind. While we strive for quality, we do not guarantee that projects will be error-free or meet every specific requirement without customization.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">6. Limitation of Liability</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">ProjectStore's maximum liability for any claim is limited to the amount paid for the specific product. We are not liable for indirect, consequential, or incidental damages arising from project usage.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">7. Governing Law</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">These Terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Bangalore, Karnataka, India.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">8. Contact</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">For legal inquiries: legal@projectstore.in</p></div>
+        <div><h3 style="color:var(--text);margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:var(--font-display)">1. Acceptance of Terms</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">By accessing or using ProjectStore ("the Site"), you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree, please do not use our services.</p></div>
+        <div><h3 style="color:var(--text);margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:var(--font-display)">2. License &amp; Usage Rights</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">Upon purchase, you receive a non-exclusive, perpetual, worldwide license to use, modify, and deploy the source code in personal and commercial projects. You may NOT: resell the original source code without significant modification, redistribute or give it away, claim original authorship, or use it to create a competing marketplace.</p></div>
+        <div><h3 style="color:var(--text);margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:var(--font-display)">3. Payments &amp; Refund Policy</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">All payments are processed securely via Razorpay. Due to the digital and instantly downloadable nature of our products, refunds are only issued if: (a) the project is fundamentally different from its description, or (b) the project is completely non-functional after our support team's assistance. Refund requests must be submitted within 7 days of purchase.</p></div>
+        <div><h3 style="color:var(--text);margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:var(--font-display)">4. Intellectual Property</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">ProjectStore and its suppliers retain all intellectual property rights to the projects listed in the marketplace. Your purchase grants a usage license only. The "ProjectStore" brand, logo, and website design are protected trademarks.</p></div>
+        <div><h3 style="color:var(--text);margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:var(--font-display)">5. Governing Law</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">These Terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Bangalore, Karnataka, India. For legal inquiries: legal@projectstore.in</p></div>
       </div>
     </div>
   </section>
@@ -878,29 +1094,27 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
   <section class="section" style="padding-top:5.5rem">
     <div class="container" style="max-width:780px">
       <div class="section-tag">Legal</div>
-      <h1 style="font-family:'Syne',sans-serif;font-size:2.75rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-1.5px">Privacy Policy</h1>
+      <h1 style="font-family:var(--font-display);font-size:2.75rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-1.5px">Privacy Policy</h1>
       <p style="color:var(--muted);font-size:.82rem;margin-bottom:3rem">Last updated: December 2024 · Compliant with DPDP Act 2023 (India)</p>
       <div style="display:flex;flex-direction:column;gap:2rem">
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">1. Information We Collect</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">We collect: name, email address, phone number, and payment transaction IDs when you purchase or contact us. We also collect usage analytics (pages visited, time on site) to improve our platform. We do NOT collect payment card numbers — these are handled entirely by Razorpay.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">2. How We Use Your Information</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">Your information is used to: process and deliver orders, provide customer support, send order confirmation and download emails, respond to inquiries, and improve our services. We never sell, rent, or share personal data with third parties for marketing purposes.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">3. Payment Security</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">All payments are processed by Razorpay, a PCI-DSS Level 1 certified payment gateway. We never store, process, or transmit credit card numbers, CVVs, or net banking credentials on our servers.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">4. Data Retention</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">We retain purchase records for 7 years as required by Indian tax law. Support conversation data is retained for 2 years. You may request deletion of non-legally-required data at any time.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">5. Cookies</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">We use essential cookies for session management and optional analytics cookies (Google Analytics) to understand traffic patterns. You can disable non-essential cookies in your browser without affecting core functionality.</p></div>
-        <div><h3 style="color:#fff;margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:'Syne',sans-serif">6. Your Rights (DPDP Act 2023)</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">You have the right to: access your personal data, correct inaccurate data, request deletion of your data, withdraw consent, and nominate someone to exercise these rights. Submit requests to: privacy@projectstore.in</p></div>
+        <div><h3 style="color:var(--text);margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:var(--font-display)">1. Information We Collect</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">We collect: name, email address, phone number, and payment transaction IDs when you purchase or contact us. We also collect usage analytics to improve our platform. We do NOT collect payment card numbers — these are handled entirely by Razorpay.</p></div>
+        <div><h3 style="color:var(--text);margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:var(--font-display)">2. How We Use Your Information</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">Your information is used to: process and deliver orders, provide customer support, send order confirmation and download emails, respond to inquiries, and improve our services. We never sell, rent, or share personal data with third parties for marketing purposes.</p></div>
+        <div><h3 style="color:var(--text);margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:var(--font-display)">3. Your Rights (DPDP Act 2023)</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">You have the right to: access your personal data, correct inaccurate data, request deletion of your data, withdraw consent, and nominate someone to exercise these rights. Submit requests to: privacy@projectstore.in</p></div>
+        <div><h3 style="color:var(--text);margin-bottom:.65rem;font-size:1.05rem;font-weight:700;font-family:var(--font-display)">4. Data Deletion</h3><p style="color:var(--muted);font-size:.9rem;line-height:1.85">We retain purchase records for 7 years as required by Indian tax law. You may request deletion of non-legally-required data at any time by emailing privacy@projectstore.in. We will process your request within 30 days.</p></div>
       </div>
     </div>
   </section>
 </div>
 
 <!-- FOOTER -->
-<footer>
+<footer role="contentinfo">
   <div class="container">
     <div class="footer-grid">
       <div>
         <div class="footer-brand">ProjectStore</div>
         <div class="footer-desc">India's premium marketplace for ready-made software projects. Buy instantly, download immediately, get expert support.</div>
         <div style="display:flex;gap:1rem;margin-top:1.35rem;flex-wrap:wrap">
-          <span style="color:var(--muted);font-size:.8rem;cursor:pointer;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color=''" onclick="openWhatsApp('')">💬 +91 98765 43210</span>
+          <span style="color:var(--muted);font-size:.8rem;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''" onclick="openWhatsApp('')">💬 +91 98765 43210</span>
           <span style="color:var(--muted);font-size:.8rem">📧 support@projectstore.in</span>
         </div>
         <div style="display:flex;gap:.75rem;margin-top:1.25rem">
@@ -932,16 +1146,16 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
         <a>Email Support</a>
         <a>Documentation</a>
         <a>Refund Policy</a>
-        <a>Track Order</a>
+        <a onclick="showPurchaseHistory()">Purchase History</a>
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">© 2024 ProjectStore. All rights reserved. 🇮🇳 Made in India with ❤️</div>
-      <div style="display:flex;gap:1.25rem;align-items:center">
+      <div class="footer-copy">© 2025 ProjectStore. All rights reserved. 🇮🇳 Made in India with ❤️</div>
+      <div style="display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap">
         <span style="font-size:.78rem;color:var(--muted);cursor:pointer" onclick="showPage('terms')">Terms</span>
         <span style="font-size:.78rem;color:var(--muted);cursor:pointer" onclick="showPage('privacy')">Privacy</span>
-        <img src="https://razorpay.com/favicon.ico" alt="Razorpay" style="height:14px;opacity:.5" onerror="this.style.display='none'">
-        <span style="font-size:.75rem;color:var(--muted)">Secured by Razorpay</span>
+        <span style="font-size:.75rem;color:var(--muted)">🔒 Secured by Razorpay</span>
+        <button class="btn-sm btn-view" style="font-size:.72rem;padding:.3rem .7rem" onclick="showShortcutsModal()">⌨️ Shortcuts</button>
       </div>
     </div>
   </div>
@@ -950,47 +1164,100 @@ footer{border-top:1px solid var(--border);padding:3.5rem 1.5rem 2rem;background:
 <script>
 // ===== DATA =====
 const PROJECTS = [
-  {id:1,slug:'ai-chatbot-saas',title:'AI Chatbot SaaS Platform',price:1999,origPrice:3999,category:'AI',technology:'Python + FastAPI + React + OpenAI',description:'Full-stack AI chatbot SaaS with GPT-4 integration, multi-tenant architecture, real-time chat, analytics dashboard, and Razorpay billing system. Deploy-ready with Docker.',features:['GPT-4 / ChatGPT Integration','Multi-tenant SaaS Architecture','Real-time WebSocket Chat','Analytics Dashboard','Razorpay Subscription Billing','Admin Panel','REST API + Swagger Docs','Docker + Deployment Guide'],emoji:'🤖',featured:true,rating:4.9,downloads:89,new:true},
-  {id:2,slug:'ecommerce-nextjs',title:'E-Commerce Platform (Next.js)',price:2499,origPrice:4999,category:'Web',technology:'Next.js 14 + Prisma + Tailwind + Razorpay',description:'Production-ready e-commerce platform with full product catalog, shopping cart, Razorpay payments, admin dashboard, inventory management, and order tracking.',features:['Full Product Catalog','Shopping Cart + Wishlist','Razorpay Payment Gateway','Order Management System','Admin Dashboard','Inventory &amp; Stock Alerts','Email Notifications','SEO Optimized'],emoji:'🛒',featured:true,rating:4.8,downloads:134},
-  {id:3,slug:'food-delivery-android',title:'Food Delivery Android App',price:1799,origPrice:3500,category:'Android',technology:'Kotlin + Firebase + Google Maps + Razorpay',description:'Complete food delivery app like Zomato/Swiggy with separate customer app, restaurant owner panel, and delivery partner app. Real-time tracking included.',features:['Customer Android App','Restaurant Owner Panel','Delivery Partner App','Real-time GPS Tracking','Push Notifications','Order History','Reviews &amp; Ratings','Payment Integration'],emoji:'🍕',featured:true,rating:4.7,downloads:67},
-  {id:4,slug:'ml-disease-prediction',title:'Disease Prediction ML System',price:1499,origPrice:2999,category:'AI',technology:'Python + Scikit-learn + Flask + Streamlit',description:'Machine learning system predicting 5 diseases (diabetes, heart disease, cancer, kidney, liver) using patient data. Includes pre-trained models and REST API.',features:['5 Disease Prediction Models','95%+ Model Accuracy','Beautiful Streamlit UI','REST API with Flask','Model Training Source Code','Data Visualization Charts','PDF Report Generation','Django Admin Panel'],emoji:'🏥',featured:false,rating:4.6,downloads:45},
-  {id:5,slug:'hospital-management',title:'Hospital Management System',price:2999,origPrice:5999,category:'Final Year',technology:'Java + Spring Boot + MySQL + Thymeleaf',description:'Complete hospital management system with patient records, appointment booking, billing, pharmacy management, lab reports, and multi-role access.',features:['Patient Registration &amp; Records','Doctor Schedule Management','Appointment Booking System','Billing &amp; Invoice Module','Pharmacy Management','Lab Reports System','Admin Portal','PDF Report Export'],emoji:'🏨',featured:false,rating:4.8,downloads:78},
-  {id:6,slug:'blockchain-voting',title:'Blockchain Voting System',price:2199,origPrice:4499,category:'Final Year',technology:'Solidity + React + Ethereum + MetaMask',description:'Decentralized voting system on Ethereum blockchain. Transparent, tamper-proof voting with smart contracts. Perfect CSE final year project with strong marks.',features:['Ethereum Smart Contracts','MetaMask Wallet Integration','Transparent Vote Tallying','Voter Registration System','Results Dashboard','Blockchain Audit Trail','IPFS Document Storage','Anti-Double Vote Logic'],emoji:'🗳️',featured:false,rating:4.7,downloads:34},
-  {id:7,slug:'social-media-react',title:'Social Media App (React)',price:1899,origPrice:3799,category:'React',technology:'React + Node.js + MongoDB + Socket.IO',description:'Full-featured social media platform with news feed, stories, real-time chat, notifications, and follow system — similar to Instagram/Twitter architecture.',features:['User Profiles &amp; Bio','Scrollable News Feed','Stories Feature','Real-time Chat (Socket.IO)','Push Notifications','Follow / Unfollow System','Image &amp; Video Uploads','Explore Page'],emoji:'📸',featured:true,rating:4.5,downloads:91},
-  {id:8,slug:'inventory-management-python',title:'Inventory Management System',price:1299,origPrice:2599,category:'Python',technology:'Python + Django + PostgreSQL + REST API',description:'Complete inventory management with barcode scanning, real-time stock tracking, supplier management, purchase orders, and comprehensive sales reports.',features:['Product &amp; SKU Catalog','Barcode Scanner Support','Low Stock Alerts','Supplier Management','Purchase Orders','Sales Analytics Reports','REST API','Excel / PDF Export'],emoji:'📦',featured:false,rating:4.6,downloads:56},
-  {id:9,slug:'student-portal-java',title:'Student Management Portal',price:1599,origPrice:3199,category:'Java',technology:'Java + Spring Boot + MySQL + Thymeleaf',description:'Comprehensive student management system with attendance tracking, grade management, timetable, parent portal, and SMS notification integration.',features:['Student Registration &amp; Profiles','Attendance Management System','Grade &amp; Marks Management','Class Timetable Builder','Parent Login Portal','SMS &amp; Email Alerts','Report Cards PDF','Admin Dashboard'],emoji:'🎓',featured:false,rating:4.7,downloads:88},
-  {id:10,slug:'fintech-dashboard',title:'FinTech Analytics Dashboard',price:3499,origPrice:6999,category:'Web',technology:'Next.js + D3.js + Node.js + PostgreSQL',description:'Premium financial analytics dashboard with real-time interactive charts, portfolio tracking, transaction history, budget planner, and tax computation tools.',features:['Real-time Interactive Charts','Portfolio Performance Tracker','Transaction History &amp; Filters','Budget Planning Tools','Tax Calculator Module','PDF Financial Reports','Dark / Light Mode Toggle','REST API Backend'],emoji:'📊',featured:true,rating:4.9,downloads:23,new:true},
-  {id:11,slug:'taxi-booking-app',title:'Taxi Booking Android App',price:2299,origPrice:4599,category:'Android',technology:'Kotlin + Google Maps SDK + Firebase + Stripe',description:'Uber-clone Android application with complete rider and driver apps, real-time GPS tracking, dynamic fare calculation, and integrated payment.',features:['Rider Android App (Kotlin)','Driver Android App (Kotlin)','Real-time GPS Tracking','Dynamic Fare Calculator','Trip History &amp; Receipts','Star Ratings System','In-app Wallet Payments','Push Notifications'],emoji:'🚕',featured:false,rating:4.6,downloads:41},
-  {id:12,slug:'nlp-resume-analyzer',title:'AI Resume Analyzer (NLP)',price:999,origPrice:1999,category:'AI',technology:'Python + NLTK + spaCy + Streamlit',description:'NLP-powered resume analyzer that scores resumes against job descriptions, extracts key skills, and provides personalized improvement recommendations.',features:['ATS Compatibility Score','Skill Extraction (NLP)','Job Description Matching','Keyword Gap Analysis','Improvement Suggestions','PDF &amp; DOCX Parser','Detailed HTML Report','Bulk Analysis API'],emoji:'📄',featured:false,rating:4.5,downloads:112},
-  {id:13,slug:'lms-learning-platform',title:'Online Learning Platform (LMS)',price:2799,origPrice:5599,category:'Web',technology:'Next.js + Prisma + S3 + Razorpay + Stripe',description:'Complete Learning Management System like Udemy with video course creation, quiz engine, certificates, progress tracking, and instructor earnings dashboard.',features:['Video Course Builder','HLS Adaptive Streaming','Quiz &amp; Assignment Engine','Completion Certificates','Student Progress Tracking','Razorpay Course Payments','Instructor Revenue Dashboard','Discussion Forums'],emoji:'🎬',featured:false,rating:4.8,downloads:29},
-  {id:14,slug:'expense-tracker-android',title:'Expense Tracker Android App',price:799,origPrice:1599,category:'Android',technology:'Kotlin + Room Database + MPAndroidChart',description:'Beautiful personal finance tracker with category-wise tracking, monthly bar &amp; pie charts, budget limits with alerts, CSV export, and home screen widgets.',features:['Category Expense Tracking','Monthly Bar &amp; Pie Charts','Budget Limit Alerts','Export to CSV / Excel','Home Screen Widgets','Dark Mode Support','Auto Backup to Google Drive','Recurring Transactions'],emoji:'💰',featured:false,rating:4.6,downloads:156},
-  {id:15,slug:'iot-smart-home',title:'IoT Smart Home Dashboard',price:1999,origPrice:3999,category:'Final Year',technology:'Python + MQTT + React + Raspberry Pi',description:'Smart home IoT system with real-time device monitoring, automation rules, energy consumption tracking, and mobile-friendly React dashboard.',features:['Multi-device Control Panel','Automation Rules Engine','Energy Consumption Monitor','Real-time MQTT Updates','Mobile-responsive Dashboard','Voice Command Support','Temperature &amp; Humidity Sensors','Alert Notifications'],emoji:'🏠',featured:false,rating:4.7,downloads:19},
-  {id:16,slug:'face-recognition-attendance',title:'Face Recognition Attendance',price:1699,origPrice:3399,category:'AI',technology:'Python + OpenCV + DeepFace + Flask + MySQL',description:'Automated attendance system using real-time facial recognition. Supports multiple cameras, attendance reports, and email notifications for absentees.',features:['Real-time Face Detection','Multi-person Recognition','Automatic Attendance Marking','Attendance Reports &amp; Stats','Camera Management System','Email Alerts for Absentees','Excel / PDF Export','Admin Web Panel'],emoji:'👤',featured:false,rating:4.8,downloads:63},
-  {id:17,slug:'cricket-score-app',title:'Live Cricket Score App',price:899,origPrice:1799,category:'Android',technology:'Kotlin + Retrofit + Cricket API + Firebase',description:'Real-time cricket score tracker with live ball-by-ball updates, match schedules, player statistics, team rankings, and push notifications for milestones.',features:['Live Ball-by-ball Scores','Full Match Scorecard','Player Statistics','Team ICC Rankings','Match Schedules &amp; Calendar','Push Notifications','Commentary Feed','Offline Match History'],emoji:'🏏',featured:false,rating:4.4,downloads:44},
-  {id:18,slug:'todo-productivity-app',title:'Team Productivity Manager',price:699,origPrice:1399,category:'React',technology:'React + Node.js + MongoDB + Socket.IO',description:'Premium productivity and project management tool with Kanban boards, time tracking, team collaboration, calendar view, and detailed analytics.',features:['Kanban Board with Drag &amp; Drop','Time Tracking per Task','Team Collaboration Tools','Calendar &amp; Timeline View','Tags, Labels &amp; Priorities','Recurring Task Support','Productivity Analytics','Mobile Responsive PWA'],emoji:'✅',featured:false,rating:4.5,downloads:201},
-  {id:19,slug:'hotel-booking-system',title:'Hotel Reservation System',price:2199,origPrice:4399,category:'Java',technology:'Java + Spring Boot + MySQL + Thymeleaf + Razorpay',description:'Complete hotel reservation system with room management, booking calendar, guest portal, check-in/out management, billing, and housekeeping module.',features:['Room Type Management','Booking Calendar View','Guest Self-service Portal','Check-in / Check-out System','Invoice &amp; Billing Module','Housekeeping Task Tracker','Occupancy Reports','Razorpay Online Payments'],emoji:'🏩',featured:false,rating:4.7,downloads:37},
-  {id:20,slug:'news-aggregator-ai',title:'AI News Aggregator Platform',price:1199,origPrice:2399,category:'Python',technology:'Python + Scrapy + BERT + React + FastAPI',description:'AI-powered news aggregation platform that scrapes, categorizes, and summarizes news using BERT. Features personalized feed, bookmarks, and search.',features:['Multi-source Web Scraping','BERT-powered Summarization','Category Auto-classification','Personalized News Feed','Full-text Search Engine','Bookmarks &amp; Reading List','REST API Access','Admin Content Manager'],emoji:'📰',featured:false,rating:4.5,downloads:52},
+  {id:1,slug:'ai-chatbot-saas',title:'AI Chatbot SaaS Platform',price:1999,origPrice:3999,category:'AI',technology:'Python + FastAPI + React + OpenAI',description:'Full-stack AI chatbot SaaS with GPT-4 integration, multi-tenant architecture, real-time chat, analytics dashboard, and Razorpay billing system. Deploy-ready with Docker.',features:['GPT-4 / ChatGPT Integration','Multi-tenant SaaS Architecture','Real-time WebSocket Chat','Analytics Dashboard','Razorpay Subscription Billing','Admin Panel','REST API + Swagger Docs','Docker + Deployment Guide'],emoji:'🤖',featured:true,rating:4.9,downloads:89,new:true,difficulty:'Advanced',setupTime:'~45 min',license:'Commercial'},
+  {id:2,slug:'ecommerce-nextjs',title:'E-Commerce Platform (Next.js)',price:2499,origPrice:4999,category:'Web',technology:'Next.js 14 + Prisma + Tailwind + Razorpay',description:'Production-ready e-commerce platform with full product catalog, shopping cart, Razorpay payments, admin dashboard, inventory management, and order tracking.',features:['Full Product Catalog','Shopping Cart + Wishlist','Razorpay Payment Gateway','Order Management System','Admin Dashboard','Inventory & Stock Alerts','Email Notifications','SEO Optimized'],emoji:'🛒',featured:true,rating:4.8,downloads:134,difficulty:'Intermediate',setupTime:'~30 min',license:'Commercial'},
+  {id:3,slug:'food-delivery-android',title:'Food Delivery Android App',price:1799,origPrice:3500,category:'Android',technology:'Kotlin + Firebase + Google Maps + Razorpay',description:'Complete food delivery app like Zomato/Swiggy with separate customer app, restaurant owner panel, and delivery partner app. Real-time tracking included.',features:['Customer Android App','Restaurant Owner Panel','Delivery Partner App','Real-time GPS Tracking','Push Notifications','Order History','Reviews & Ratings','Payment Integration'],emoji:'🍕',featured:true,rating:4.7,downloads:67,difficulty:'Advanced',setupTime:'~60 min',license:'Commercial'},
+  {id:4,slug:'ml-disease-prediction',title:'Disease Prediction ML System',price:1499,origPrice:2999,category:'AI',technology:'Python + Scikit-learn + Flask + Streamlit',description:'Machine learning system predicting 5 diseases (diabetes, heart disease, cancer, kidney, liver) using patient data. Includes pre-trained models and REST API.',features:['5 Disease Prediction Models','95%+ Model Accuracy','Beautiful Streamlit UI','REST API with Flask','Model Training Source Code','Data Visualization Charts','PDF Report Generation'],emoji:'🏥',featured:false,rating:4.6,downloads:45,difficulty:'Intermediate',setupTime:'~20 min',license:'Personal'},
+  {id:5,slug:'hospital-management',title:'Hospital Management System',price:2999,origPrice:5999,category:'Final Year',technology:'Java + Spring Boot + MySQL + Thymeleaf',description:'Complete hospital management system with patient records, appointment booking, billing, pharmacy management, lab reports, and multi-role access.',features:['Patient Registration & Records','Doctor Schedule Management','Appointment Booking System','Billing & Invoice Module','Pharmacy Management','Lab Reports System','Admin Portal','PDF Report Export'],emoji:'🏨',featured:false,rating:4.8,downloads:78,difficulty:'Advanced',setupTime:'~45 min',license:'Commercial'},
+  {id:6,slug:'blockchain-voting',title:'Blockchain Voting System',price:2199,origPrice:4499,category:'Final Year',technology:'Solidity + React + Ethereum + MetaMask',description:'Decentralized voting system on Ethereum blockchain. Transparent, tamper-proof voting with smart contracts. Perfect CSE final year project.',features:['Ethereum Smart Contracts','MetaMask Wallet Integration','Transparent Vote Tallying','Voter Registration System','Results Dashboard','Blockchain Audit Trail','IPFS Document Storage'],emoji:'🗳️',featured:false,rating:4.7,downloads:34,difficulty:'Advanced',setupTime:'~90 min',license:'Personal'},
+  {id:7,slug:'social-media-react',title:'Social Media App (React)',price:1899,origPrice:3799,category:'React',technology:'React + Node.js + MongoDB + Socket.IO',description:'Full-featured social media platform with news feed, stories, real-time chat, notifications, and follow system — similar to Instagram/Twitter architecture.',features:['User Profiles & Bio','Scrollable News Feed','Stories Feature','Real-time Chat (Socket.IO)','Push Notifications','Follow / Unfollow System','Image & Video Uploads','Explore Page'],emoji:'📸',featured:true,rating:4.5,downloads:91,difficulty:'Intermediate',setupTime:'~35 min',license:'Commercial'},
+  {id:8,slug:'inventory-management-python',title:'Inventory Management System',price:1299,origPrice:2599,category:'Python',technology:'Python + Django + PostgreSQL + REST API',description:'Complete inventory management with barcode scanning, real-time stock tracking, supplier management, purchase orders, and comprehensive sales reports.',features:['Product & SKU Catalog','Barcode Scanner Support','Low Stock Alerts','Supplier Management','Purchase Orders','Sales Analytics Reports','REST API','Excel / PDF Export'],emoji:'📦',featured:false,rating:4.6,downloads:56,difficulty:'Intermediate',setupTime:'~25 min',license:'Commercial'},
+  {id:9,slug:'student-portal-java',title:'Student Management Portal',price:1599,origPrice:3199,category:'Java',technology:'Java + Spring Boot + MySQL + Thymeleaf',description:'Comprehensive student management system with attendance tracking, grade management, timetable, parent portal, and SMS notification integration.',features:['Student Registration & Profiles','Attendance Management System','Grade & Marks Management','Class Timetable Builder','Parent Login Portal','SMS & Email Alerts','Report Cards PDF','Admin Dashboard'],emoji:'🎓',featured:false,rating:4.7,downloads:88,difficulty:'Intermediate',setupTime:'~40 min',license:'Personal'},
+  {id:10,slug:'fintech-dashboard',title:'FinTech Analytics Dashboard',price:3499,origPrice:6999,category:'Web',technology:'Next.js + D3.js + Node.js + PostgreSQL',description:'Premium financial analytics dashboard with real-time interactive charts, portfolio tracking, transaction history, budget planner, and tax computation tools.',features:['Real-time Interactive Charts','Portfolio Performance Tracker','Transaction History & Filters','Budget Planning Tools','Tax Calculator Module','PDF Financial Reports','Dark / Light Mode Toggle','REST API Backend'],emoji:'📊',featured:true,rating:4.9,downloads:23,new:true,difficulty:'Advanced',setupTime:'~50 min',license:'Commercial'},
+  {id:11,slug:'taxi-booking-app',title:'Taxi Booking Android App',price:2299,origPrice:4599,category:'Android',technology:'Kotlin + Google Maps SDK + Firebase + Stripe',description:'Uber-clone Android application with complete rider and driver apps, real-time GPS tracking, dynamic fare calculation, and integrated payment.',features:['Rider Android App (Kotlin)','Driver Android App (Kotlin)','Real-time GPS Tracking','Dynamic Fare Calculator','Trip History & Receipts','Star Ratings System','In-app Wallet Payments','Push Notifications'],emoji:'🚕',featured:false,rating:4.6,downloads:41,difficulty:'Advanced',setupTime:'~70 min',license:'Commercial'},
+  {id:12,slug:'nlp-resume-analyzer',title:'AI Resume Analyzer (NLP)',price:999,origPrice:1999,category:'AI',technology:'Python + NLTK + spaCy + Streamlit',description:'NLP-powered resume analyzer that scores resumes against job descriptions, extracts key skills, and provides personalized improvement recommendations.',features:['ATS Compatibility Score','Skill Extraction (NLP)','Job Description Matching','Keyword Gap Analysis','Improvement Suggestions','PDF & DOCX Parser','Detailed HTML Report','Bulk Analysis API'],emoji:'📄',featured:false,rating:4.5,downloads:112,difficulty:'Beginner',setupTime:'~15 min',license:'Personal'},
+  {id:13,slug:'lms-learning-platform',title:'Online Learning Platform (LMS)',price:2799,origPrice:5599,category:'Web',technology:'Next.js + Prisma + S3 + Razorpay + Stripe',description:'Complete Learning Management System like Udemy with video course creation, quiz engine, certificates, progress tracking, and instructor earnings dashboard.',features:['Video Course Builder','HLS Adaptive Streaming','Quiz & Assignment Engine','Completion Certificates','Student Progress Tracking','Razorpay Course Payments','Instructor Revenue Dashboard','Discussion Forums'],emoji:'🎬',featured:false,rating:4.8,downloads:29,difficulty:'Advanced',setupTime:'~60 min',license:'Commercial'},
+  {id:14,slug:'expense-tracker-android',title:'Expense Tracker Android App',price:799,origPrice:1599,category:'Android',technology:'Kotlin + Room Database + MPAndroidChart',description:'Beautiful personal finance tracker with category-wise tracking, monthly bar & pie charts, budget limits with alerts, CSV export, and home screen widgets.',features:['Category Expense Tracking','Monthly Bar & Pie Charts','Budget Limit Alerts','Export to CSV / Excel','Home Screen Widgets','Dark Mode Support','Auto Backup to Google Drive','Recurring Transactions'],emoji:'💰',featured:false,rating:4.6,downloads:156,difficulty:'Beginner',setupTime:'~15 min',license:'Personal'},
+  {id:15,slug:'iot-smart-home',title:'IoT Smart Home Dashboard',price:1999,origPrice:3999,category:'Final Year',technology:'Python + MQTT + React + Raspberry Pi',description:'Smart home IoT system with real-time device monitoring, automation rules, energy consumption tracking, and mobile-friendly React dashboard.',features:['Multi-device Control Panel','Automation Rules Engine','Energy Consumption Monitor','Real-time MQTT Updates','Mobile-responsive Dashboard','Voice Command Support','Temperature & Humidity Sensors','Alert Notifications'],emoji:'🏠',featured:false,rating:4.7,downloads:19,difficulty:'Advanced',setupTime:'~90 min',license:'Personal'},
+  {id:16,slug:'face-recognition-attendance',title:'Face Recognition Attendance',price:1699,origPrice:3399,category:'AI',technology:'Python + OpenCV + DeepFace + Flask + MySQL',description:'Automated attendance system using real-time facial recognition. Supports multiple cameras, attendance reports, and email notifications for absentees.',features:['Real-time Face Detection','Multi-person Recognition','Automatic Attendance Marking','Attendance Reports & Stats','Camera Management System','Email Alerts for Absentees','Excel / PDF Export','Admin Web Panel'],emoji:'👤',featured:false,rating:4.8,downloads:63,difficulty:'Intermediate',setupTime:'~30 min',license:'Commercial'},
+  {id:17,slug:'cricket-score-app',title:'Live Cricket Score App',price:899,origPrice:1799,category:'Android',technology:'Kotlin + Retrofit + Cricket API + Firebase',description:'Real-time cricket score tracker with live ball-by-ball updates, match schedules, player statistics, team rankings, and push notifications for milestones.',features:['Live Ball-by-ball Scores','Full Match Scorecard','Player Statistics','Team ICC Rankings','Match Schedules & Calendar','Push Notifications','Commentary Feed','Offline Match History'],emoji:'🏏',featured:false,rating:4.4,downloads:44,difficulty:'Beginner',setupTime:'~20 min',license:'Personal'},
+  {id:18,slug:'todo-productivity-app',title:'Team Productivity Manager',price:699,origPrice:1399,category:'React',technology:'React + Node.js + MongoDB + Socket.IO',description:'Premium productivity and project management tool with Kanban boards, time tracking, team collaboration, calendar view, and detailed analytics.',features:['Kanban Board with Drag & Drop','Time Tracking per Task','Team Collaboration Tools','Calendar & Timeline View','Tags, Labels & Priorities','Recurring Task Support','Productivity Analytics','Mobile Responsive PWA'],emoji:'✅',featured:false,rating:4.5,downloads:201,difficulty:'Beginner',setupTime:'~20 min',license:'Commercial'},
+  {id:19,slug:'hotel-booking-system',title:'Hotel Reservation System',price:2199,origPrice:4399,category:'Java',technology:'Java + Spring Boot + MySQL + Thymeleaf + Razorpay',description:'Complete hotel reservation system with room management, booking calendar, guest portal, check-in/out management, billing, and housekeeping module.',features:['Room Type Management','Booking Calendar View','Guest Self-service Portal','Check-in / Check-out System','Invoice & Billing Module','Housekeeping Task Tracker','Occupancy Reports','Razorpay Online Payments'],emoji:'🏩',featured:false,rating:4.7,downloads:37,difficulty:'Intermediate',setupTime:'~45 min',license:'Commercial'},
+  {id:20,slug:'news-aggregator-ai',title:'AI News Aggregator Platform',price:1199,origPrice:2399,category:'Python',technology:'Python + Scrapy + BERT + React + FastAPI',description:'AI-powered news aggregation platform that scrapes, categorizes, and summarizes news using BERT. Features personalized feed, bookmarks, and search.',features:['Multi-source Web Scraping','BERT-powered Summarization','Category Auto-classification','Personalized News Feed','Full-text Search Engine','Bookmarks & Reading List','REST API Access','Admin Content Manager'],emoji:'📰',featured:false,rating:4.5,downloads:52,difficulty:'Intermediate',setupTime:'~35 min',license:'Personal'},
 ];
 
 const WA_NUMBER = '919876543210';
 let currentFilter = '';
 let displayedProjects = [...PROJECTS];
 let currentProject = null;
+let wishlist = JSON.parse(localStorage.getItem('ps_wishlist') || '[]');
+let purchases = JSON.parse(localStorage.getItem('ps_purchases') || '[]');
+let compareList = [];
+
+// Adv filter state
+let advRating = 0;
+let advTechs = [];
+let advDiffs = [];
+let advPriceMin = 0;
+let advPriceMax = 3999;
+
+// ===== THEME =====
+const savedTheme = localStorage.getItem('ps_theme') || 'dark';
+if(savedTheme === 'light') {
+  document.documentElement.setAttribute('data-theme','light');
+  document.getElementById('themeBtn').textContent = '☀️';
+}
+
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if(isLight) {
+    document.documentElement.removeAttribute('data-theme');
+    document.getElementById('themeBtn').textContent = '🌙';
+    localStorage.setItem('ps_theme','dark');
+  } else {
+    document.documentElement.setAttribute('data-theme','light');
+    document.getElementById('themeBtn').textContent = '☀️';
+    localStorage.setItem('ps_theme','light');
+  }
+}
+
+// ===== PROMO BANNER =====
+function closeBanner() {
+  document.getElementById('promoBanner').style.display='none';
+  localStorage.setItem('ps_banner','closed');
+}
+if(localStorage.getItem('ps_banner')==='closed') closeBanner();
 
 // ===== PAGE NAV =====
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
+  const el = document.getElementById('page-'+page);
+  if(el) el.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   document.getElementById('navLinks').classList.remove('open');
+  document.getElementById('acctDropdown').classList.remove('open');
   if(page === 'projects') { displayedProjects = [...PROJECTS]; renderProjectsGrid(); }
   if(page === 'home') setTimeout(animateCounters, 100);
+  if(page === 'wishlist') renderWishlist();
   initReveal();
 }
 
 function toggleNav() {
-  document.getElementById('navLinks').classList.toggle('open');
+  const nl = document.getElementById('navLinks');
+  nl.classList.toggle('open');
+  const btn = document.querySelector('.hamburger');
+  btn.setAttribute('aria-expanded', nl.classList.contains('open'));
 }
+
+function toggleAcctDropdown() {
+  const dd = document.getElementById('acctDropdown');
+  dd.classList.toggle('open');
+  document.getElementById('acctBtn').setAttribute('aria-expanded', dd.classList.contains('open'));
+}
+
+document.addEventListener('click', e => {
+  if(!e.target.closest('.acct-wrap')) document.getElementById('acctDropdown').classList.remove('open');
+});
 
 // ===== SCROLL PROGRESS =====
 window.addEventListener('scroll', () => {
@@ -999,7 +1266,7 @@ window.addEventListener('scroll', () => {
   document.getElementById('progressBar').style.width = Math.min(pct,100) + '%';
 });
 
-// ===== CARD HTML =====
+// ===== GRADIENT MAP =====
 const gradMap = {
   'AI':'linear-gradient(135deg,rgba(123,110,246,.22),rgba(0,229,255,.08))',
   'Web':'linear-gradient(135deg,rgba(0,229,255,.18),rgba(123,110,246,.08))',
@@ -1010,20 +1277,31 @@ const gradMap = {
   'React':'linear-gradient(135deg,rgba(97,218,251,.18),rgba(123,110,246,.08))',
 };
 
+const diffClass = {Beginner:'diff-beginner',Intermediate:'diff-intermediate',Advanced:'diff-advanced'};
+
 function cardHTML(p) {
   const grad = gradMap[p.category] || gradMap.AI;
   const newBadge = p.new ? '<span style="background:var(--accent);color:#000;font-size:.62rem;font-weight:800;padding:.2rem .55rem;border-radius:100px;letter-spacing:.5px">NEW</span>' : '';
+  const isWL = wishlist.includes(p.id);
+  const discount = Math.round((1-p.price/p.origPrice)*100);
   return `
-  <div class="p-card" onclick="openDetail(${p.id})">
-    <div class="p-thumb" style="background:${grad}">${p.emoji}</div>
+  <article class="p-card" onclick="openDetail(${p.id})">
+    <div class="p-thumb" style="background:${grad}" role="img" aria-label="${p.title} project thumbnail">${p.emoji}</div>
+    <button class="card-wl-btn${isWL?' wishlisted':''}" onclick="event.stopPropagation();toggleWishlist(${p.id})" aria-label="${isWL?'Remove from':'Add to'} wishlist" title="${isWL?'Remove from':'Add to'} wishlist">${isWL?'❤️':'🤍'}</button>
     <div class="p-body">
       <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.45rem">
         <div class="p-cat">${p.category}</div>${newBadge}
+        <span style="background:rgba(0,229,255,.1);color:var(--accent);font-size:.62rem;font-weight:700;padding:.2rem .55rem;border-radius:100px">${discount}% OFF</span>
       </div>
       <div class="p-title">${p.title}</div>
       <div class="p-tech">⚙ ${p.technology}</div>
+      <div class="p-meta-row">
+        <span class="diff-badge ${diffClass[p.difficulty]||'diff-beginner'}">${p.difficulty}</span>
+        <span class="setup-time">⏱ ${p.setupTime}</span>
+        <span class="lic-badge">📄 ${p.license}</span>
+      </div>
       <div class="rating">
-        <span class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5-Math.floor(p.rating))}</span>
+        <span class="stars" aria-label="${p.rating} out of 5 stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5-Math.floor(p.rating))}</span>
         <span class="rating-num">${p.rating} (${p.downloads} bought)</span>
       </div>
       <div class="p-footer">
@@ -1032,12 +1310,13 @@ function cardHTML(p) {
           <div style="font-size:.68rem;color:var(--muted);text-decoration:line-through">₹${p.origPrice.toLocaleString('en-IN')}</div>
         </div>
         <div class="p-actions">
-          <button class="btn-sm btn-view" onclick="event.stopPropagation();openDetail(${p.id})" aria-label="View ${p.title}">Details</button>
-          <button class="btn-sm btn-buy" onclick="event.stopPropagation();buyProject(${p.id})" aria-label="Buy ${p.title}">Buy Now</button>
+          <button class="btn-sm btn-view" onclick="event.stopPropagation();toggleCompare(${p.id})" aria-label="Compare ${p.title}" title="Add to compare">⚖</button>
+          <button class="btn-sm btn-view" onclick="event.stopPropagation();openDetail(${p.id})" aria-label="View details for ${p.title}">Details</button>
+          <button class="btn-sm btn-buy" onclick="event.stopPropagation();buyProject(${p.id})" aria-label="Buy ${p.title} for ₹${p.price.toLocaleString('en-IN')}">Buy</button>
         </div>
       </div>
     </div>
-  </div>`;
+  </article>`;
 }
 
 function renderFeatured() {
@@ -1049,7 +1328,7 @@ function renderProjectsGrid() {
   if(!grid) return;
   grid.innerHTML = displayedProjects.length
     ? displayedProjects.map(cardHTML).join('')
-    : '<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--muted)"><div style="font-size:3rem;margin-bottom:1rem">🔍</div><p>No projects found. Try a different search.</p></div>';
+    : '<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--muted)" role="status"><div style="font-size:3rem;margin-bottom:1rem">🔍</div><p>No projects found. Try adjusting your filters.</p></div>';
   const cnt = document.getElementById('resultCount');
   if(cnt) cnt.textContent = `Showing ${displayedProjects.length} project${displayedProjects.length!==1?'s':''}`;
 }
@@ -1059,18 +1338,23 @@ function filterProjects() {
   displayedProjects = PROJECTS.filter(p => {
     const matchQ = !q || p.title.toLowerCase().includes(q) || p.technology.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
     const matchF = !currentFilter || p.category === currentFilter;
-    return matchQ && matchF;
+    const matchPrice = p.price >= advPriceMin && p.price <= advPriceMax;
+    const matchRating = p.rating >= advRating;
+    const matchTech = advTechs.length === 0 || advTechs.some(t => p.technology.includes(t));
+    const matchDiff = advDiffs.length === 0 || advDiffs.includes(p.difficulty);
+    return matchQ && matchF && matchPrice && matchRating && matchTech && matchDiff;
   });
   renderProjectsGrid();
 }
 
 function setFilter(cat) {
   currentFilter = cat;
-  document.querySelectorAll('#filterTags .tag').forEach(t => {
-    const label = t.textContent.trim().replace(/^[🤖🌐📱🐍☕🎓⚛️]\s?/,'');
-    t.classList.toggle('active', label === (cat || 'All') || (cat && t.textContent.includes(cat)));
-    if(!cat) t.classList.toggle('active', t.textContent.trim() === 'All');
-  });
+  document.querySelectorAll('#filterTags .tag').forEach(t => t.classList.remove('active'));
+  const tags = document.querySelectorAll('#filterTags .tag');
+  if(!cat) { tags[0].classList.add('active'); }
+  else {
+    tags.forEach(t => { if(t.textContent.trim().replace(/^[^\s]+\s/,'') === cat || t.textContent.includes(cat)) t.classList.add('active'); });
+  }
   filterProjects();
 }
 
@@ -1091,6 +1375,169 @@ function filterAndGo(cat) {
   showPage('projects');
 }
 
+// ===== ADVANCED FILTERS =====
+function toggleAdvFilters() {
+  const panel = document.getElementById('advFiltersPanel');
+  const btn = document.getElementById('advFiltersBtn');
+  const isOpen = panel.classList.toggle('open');
+  btn.setAttribute('aria-expanded', isOpen);
+  btn.textContent = isOpen ? '✕ Hide Filters' : '⚙ Advanced Filters';
+}
+
+function updatePriceFilter() {
+  const min = +document.getElementById('priceMin').value;
+  const max = +document.getElementById('priceMax').value;
+  advPriceMin = Math.min(min,max);
+  advPriceMax = Math.max(min,max);
+  document.getElementById('priceMinLabel').textContent = advPriceMin.toLocaleString('en-IN');
+  document.getElementById('priceMaxLabel').textContent = advPriceMax.toLocaleString('en-IN');
+}
+
+function setRatingFilter(val) {
+  advRating = val;
+  document.querySelectorAll('.rf-star').forEach(s => s.classList.remove('active'));
+  const idMap = {0:'rfs-0',4:'rfs-4',4.5:'rfs-45',4.8:'rfs-48'};
+  document.getElementById(idMap[val])?.classList.add('active');
+}
+
+function toggleTechFilter(el, tech) {
+  el.classList.toggle('selected');
+  if(el.classList.contains('selected')) advTechs.push(tech);
+  else advTechs = advTechs.filter(t=>t!==tech);
+}
+
+function toggleDiffFilter(el, diff) {
+  el.classList.toggle('selected');
+  if(el.classList.contains('selected')) advDiffs.push(diff);
+  else advDiffs = advDiffs.filter(d=>d!==diff);
+}
+
+function applyAdvFilters() { filterProjects(); showToast('Filters applied','⚙'); }
+
+function resetAdvFilters() {
+  advRating = 0; advTechs = []; advDiffs = []; advPriceMin = 0; advPriceMax = 3999;
+  document.getElementById('priceMin').value = 0;
+  document.getElementById('priceMax').value = 3999;
+  document.getElementById('priceMinLabel').textContent = '0';
+  document.getElementById('priceMaxLabel').textContent = '3,999';
+  document.querySelectorAll('.rf-star').forEach(s=>s.classList.remove('active'));
+  document.getElementById('rfs-0').classList.add('active');
+  document.querySelectorAll('.tech-check,.tech-check').forEach(s=>s.classList.remove('selected'));
+  filterProjects();
+  showToast('Filters reset','✅');
+}
+
+// ===== SEARCH SUGGESTIONS =====
+function showSuggestions() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const box = document.getElementById('searchSuggestions');
+  if(!q || q.length < 2) { box.classList.remove('show'); return; }
+  const matches = PROJECTS.filter(p =>
+    p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
+  ).slice(0,5);
+  if(!matches.length) { box.classList.remove('show'); return; }
+  box.innerHTML = matches.map(p => `
+    <div class="sug-item" onclick="quickSelect(${p.id})" role="option">
+      <span style="font-size:1.2rem">${p.emoji}</span>
+      <div><strong>${p.title}</strong><div style="font-size:.72rem">${p.category} · ₹${p.price.toLocaleString('en-IN')}</div></div>
+    </div>`).join('');
+  box.classList.add('show');
+}
+
+function hideSuggestions() {
+  document.getElementById('searchSuggestions').classList.remove('show');
+}
+
+function quickSelect(id) {
+  hideSuggestions();
+  openDetail(id);
+}
+
+// ===== WISHLIST =====
+function toggleWishlist(id) {
+  const idx = wishlist.indexOf(id);
+  if(idx >= 0) {
+    wishlist.splice(idx,1);
+    showToast('Removed from wishlist','🤍');
+  } else {
+    wishlist.push(id);
+    showToast('Added to wishlist ❤️','❤️');
+  }
+  localStorage.setItem('ps_wishlist', JSON.stringify(wishlist));
+  updateWLBadge();
+  renderFeatured();
+  if(document.getElementById('page-projects').classList.contains('active')) renderProjectsGrid();
+}
+
+function updateWLBadge() {
+  const badge = document.getElementById('wlBadge');
+  badge.textContent = wishlist.length;
+  badge.classList.toggle('show', wishlist.length > 0);
+}
+
+function renderWishlist() {
+  const container = document.getElementById('wishlistContent');
+  if(!wishlist.length) {
+    container.innerHTML = `<div class="wl-empty"><div class="wl-empty-icon">🤍</div><p style="font-size:1.1rem;font-weight:600;margin-bottom:.75rem">Your wishlist is empty</p><p style="font-size:.9rem">Save projects you're interested in by clicking the ♡ heart on any project card.</p><button class="btn-primary" style="margin-top:1.5rem" onclick="showPage('projects')">Browse Projects</button></div>`;
+    return;
+  }
+  const items = wishlist.map(id => PROJECTS.find(p=>p.id===id)).filter(Boolean);
+  container.innerHTML = `<div class="grid-3">${items.map(cardHTML).join('')}</div>`;
+}
+
+// ===== COMPARE =====
+function toggleCompare(id) {
+  const idx = compareList.indexOf(id);
+  if(idx >= 0) {
+    compareList.splice(idx,1);
+    showToast('Removed from compare','⚖');
+  } else {
+    if(compareList.length >= 3) { showToast('Max 3 projects to compare','⚠️'); return; }
+    compareList.push(id);
+    showToast('Added to compare list','⚖');
+  }
+  updateCompareBar();
+}
+
+function updateCompareBar() {
+  const bar = document.getElementById('compareBar');
+  const slots = document.getElementById('compareSlots');
+  const count = document.getElementById('compareCount');
+  bar.classList.toggle('visible', compareList.length > 0);
+  count.textContent = compareList.length;
+  slots.innerHTML = compareList.map(id => {
+    const p = PROJECTS.find(pr=>pr.id===id);
+    return p ? `<div class="compare-slot">${p.emoji} ${p.title.substring(0,20)}... <button class="compare-remove" onclick="toggleCompare(${id})" aria-label="Remove ${p.title} from compare">✕</button></div>` : '';
+  }).join('');
+}
+
+function clearCompare() {
+  compareList = [];
+  updateCompareBar();
+}
+
+function showCompare() {
+  if(compareList.length < 2) { showToast('Add at least 2 projects to compare','⚠️'); return; }
+  const projects = compareList.map(id => PROJECTS.find(p=>p.id===id)).filter(Boolean);
+  const rows = ['price','rating','difficulty','setupTime','license','category','downloads'];
+  const labels = {price:'Price',rating:'Rating',difficulty:'Difficulty',setupTime:'Setup Time',license:'License',category:'Category',downloads:'Buyers'};
+  const format = (p,k) => {
+    if(k==='price') return `₹${p[k].toLocaleString('en-IN')}`;
+    if(k==='rating') return `⭐ ${p[k]}/5.0`;
+    if(k==='downloads') return `${p[k]}+`;
+    return p[k]||'-';
+  };
+  let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.875rem">
+    <thead><tr><th style="text-align:left;padding:.75rem;border-bottom:1px solid var(--border);color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px">Feature</th>
+    ${projects.map(p=>`<th style="text-align:center;padding:.75rem;border-bottom:1px solid var(--border)">${p.emoji}<br><div style="font-size:.78rem;font-weight:700;margin-top:.35rem">${p.title}</div></th>`).join('')}
+    </tr></thead><tbody>
+    ${rows.map(k=>`<tr><td style="padding:.75rem;color:var(--muted);font-size:.82rem;border-bottom:1px solid var(--border)">${labels[k]}</td>${projects.map(p=>`<td style="text-align:center;padding:.75rem;font-weight:600;border-bottom:1px solid var(--border)">${format(p,k)}</td>`).join('')}</tr>`).join('')}
+    <tr><td style="padding:.75rem"></td>${projects.map(p=>`<td style="text-align:center;padding:.75rem"><button class="btn-sm btn-buy" onclick="buyProject(${p.id})">Buy ₹${p.price.toLocaleString('en-IN')}</button></td>`).join('')}</tr>
+    </tbody></table></div>`;
+  document.getElementById('compareContent').innerHTML = html;
+  document.getElementById('compareModal').classList.add('open');
+}
+
 // ===== DETAIL PAGE =====
 function openDetail(id) {
   currentProject = PROJECTS.find(p=>p.id===id);
@@ -1099,47 +1546,48 @@ function openDetail(id) {
   document.getElementById('detailBreadcrumb').textContent = p.title;
   const grad = gradMap[p.category] || gradMap.AI;
   const discount = Math.round((1-p.price/p.origPrice)*100);
+  const isWL = wishlist.includes(p.id);
+  const inclItems = ['Full Source Code','Database Scripts','Documentation (.md)','Environment Example (.env)','Deployment Guide','30-Day WhatsApp Support'];
   document.getElementById('detailContent').innerHTML = `
     <div>
-      <div class="detail-img" style="background:${grad}">${p.emoji}</div>
+      <div class="detail-img" style="background:${grad}" role="img" aria-label="${p.title} preview">${p.emoji}</div>
       <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem">
         <span class="t-badge" style="background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--accent)">${p.category}</span>
         <span class="t-badge">⭐ ${p.rating}/5.0</span>
         <span class="t-badge">${p.downloads}+ buyers</span>
-        <span class="t-badge">30-Day Support</span>
+        <span class="diff-badge ${diffClass[p.difficulty]||'diff-beginner'}">${p.difficulty}</span>
+        <span class="lic-badge">📄 ${p.license} License</span>
+        <span style="font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.3rem">⏱ ${p.setupTime} setup</span>
       </div>
-      <h1 style="font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;letter-spacing:-1px;margin-bottom:1rem;line-height:1.2">${p.title}</h1>
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(this,'overview')">Overview</button>
-        <button class="tab-btn" onclick="switchTab(this,'features')">Features</button>
-        <button class="tab-btn" onclick="switchTab(this,'install')">Installation</button>
-        <button class="tab-btn" onclick="switchTab(this,'tech')">Tech Stack</button>
+      <h1 style="font-family:var(--font-display);font-size:1.9rem;font-weight:800;letter-spacing:-1px;margin-bottom:1rem;line-height:1.2">${p.title}</h1>
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" role="tab" aria-selected="true" onclick="switchTab(this,'overview')">Overview</button>
+        <button class="tab-btn" role="tab" aria-selected="false" onclick="switchTab(this,'features')">Features</button>
+        <button class="tab-btn" role="tab" aria-selected="false" onclick="switchTab(this,'whatsincluded')">What's Included</button>
+        <button class="tab-btn" role="tab" aria-selected="false" onclick="switchTab(this,'install')">Installation</button>
+        <button class="tab-btn" role="tab" aria-selected="false" onclick="switchTab(this,'tech')">Tech Stack</button>
       </div>
-      <div class="tab-content active" id="tab-overview">
+      <div class="tab-content active" id="tab-overview" role="tabpanel">
         <p style="color:var(--muted);font-size:.95rem;line-height:1.85;margin-bottom:1.5rem">${p.description}</p>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem">
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem">
-            <div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">CATEGORY</div>
-            <div style="font-size:.95rem;font-weight:700">${p.category}</div>
-          </div>
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem">
-            <div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">BUYERS</div>
-            <div style="font-size:.95rem;font-weight:700">${p.downloads}+ purchases</div>
-          </div>
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem">
-            <div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">RATING</div>
-            <div style="font-size:.95rem;font-weight:700">⭐ ${p.rating} / 5.0</div>
-          </div>
-          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem">
-            <div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">SUPPORT</div>
-            <div style="font-size:.95rem;font-weight:700">30 Days Free</div>
-          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">CATEGORY</div><div style="font-size:.95rem;font-weight:700">${p.category}</div></div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">BUYERS</div><div style="font-size:.95rem;font-weight:700">${p.downloads}+ purchases</div></div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">DIFFICULTY</div><div style="font-size:.95rem;font-weight:700">${p.difficulty}</div></div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem"><div style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:.35rem">LICENSE</div><div style="font-size:.95rem;font-weight:700">${p.license} Use</div></div>
         </div>
       </div>
-      <div class="tab-content" id="tab-features">
+      <div class="tab-content" id="tab-features" role="tabpanel">
         <ul class="feature-list">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
       </div>
-      <div class="tab-content" id="tab-install">
+      <div class="tab-content" id="tab-whatsincluded" role="tabpanel">
+        <p style="color:var(--muted);font-size:.875rem;margin-bottom:1rem">Everything you need, delivered in a single ZIP file immediately after payment:</p>
+        <div class="included-list">${inclItems.map(i=>`<div class="inc-item"><span class="inc-check">✓</span><span>${i}</span></div>`).join('')}</div>
+        <div style="margin-top:1.25rem;padding:1rem;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:var(--radius-sm)">
+          <p style="color:#22c55e;font-size:.82rem;font-weight:700;margin-bottom:.35rem">⏱ Estimated Setup Time: ${p.setupTime}</p>
+          <p style="color:var(--muted);font-size:.82rem;line-height:1.65">Based on developer feedback from ${p.downloads}+ buyers. Support available via WhatsApp if you need help.</p>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-install" role="tabpanel">
         <div class="code-block">
           <div class="code-comment"># Quick Setup Guide</div>
           <div style="margin-top:.5rem">1. git clone [download-link-from-email]</div>
@@ -1151,10 +1599,10 @@ function openDetail(id) {
         </div>
         <div style="margin-top:1.25rem;padding:1rem;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.15);border-radius:var(--radius-sm)">
           <p style="color:var(--accent);font-size:.82rem;font-weight:700;margin-bottom:.35rem">📄 Full Documentation Included</p>
-          <p style="color:var(--muted);font-size:.82rem;line-height:1.65">Complete setup guide, database schema, API documentation, and deployment instructions included in the ZIP file. WhatsApp support available if you get stuck.</p>
+          <p style="color:var(--muted);font-size:.82rem;line-height:1.65">Complete setup guide, database schema, API documentation, and deployment instructions included. WhatsApp support available if you get stuck.</p>
         </div>
       </div>
-      <div class="tab-content" id="tab-tech">
+      <div class="tab-content" id="tab-tech" role="tabpanel">
         <div style="margin-bottom:1.25rem">
           <div style="font-size:.75rem;color:var(--muted);font-weight:700;margin-bottom:.65rem;letter-spacing:.5px">CORE TECHNOLOGY</div>
           <div class="tech-badges">${p.technology.split('+').map(t=>`<span class="t-badge" style="font-size:.8rem;padding:.4rem .9rem">${t.trim()}</span>`).join('')}</div>
@@ -1180,15 +1628,19 @@ function openDetail(id) {
         </div>
         <div style="font-size:.8rem;color:var(--muted);text-decoration:line-through;margin-bottom:1.1rem">₹${p.origPrice.toLocaleString('en-IN')} original price</div>
         <button class="btn-primary" style="width:100%;padding:1rem;font-size:1rem;margin-bottom:.75rem" onclick="buyProject(${p.id})">⚡ Buy Now — ₹${p.price.toLocaleString('en-IN')}</button>
-        <button class="btn-secondary" style="width:100%;padding:.8rem;font-size:.9rem" onclick="inquireProject(${p.id})">💬 WhatsApp Inquiry</button>
+        <div style="display:flex;gap:.6rem;margin-bottom:.75rem">
+          <button class="btn-secondary" style="flex:1;padding:.7rem;font-size:.85rem" onclick="inquireProject(${p.id})">💬 WhatsApp</button>
+          <button class="btn-secondary" style="padding:.7rem 1rem;font-size:.85rem" onclick="toggleWishlist(${p.id})" title="${isWL?'Remove from':'Add to'} wishlist">${isWL?'❤️':'🤍'}</button>
+          <button class="btn-secondary" style="padding:.7rem 1rem;font-size:.85rem" onclick="toggleCompare(${p.id})" title="Add to compare">⚖</button>
+        </div>
         <div class="divider"></div>
         <div class="trust-items">
           <div class="trust-item"><span style="color:var(--accent)">⚡</span><span>Instant download after payment</span></div>
           <div class="trust-item"><span style="color:var(--accent)">✅</span><span>100% working source code</span></div>
           <div class="trust-item"><span style="color:var(--accent)">💬</span><span>30-day WhatsApp support</span></div>
           <div class="trust-item"><span style="color:var(--accent)">🔒</span><span>Secure Razorpay payment</span></div>
-          <div class="trust-item"><span style="color:var(--accent)">📄</span><span>Personal + commercial license</span></div>
-          <div class="trust-item"><span style="color:var(--accent)">♻️</span><span>Free future updates</span></div>
+          <div class="trust-item"><span style="color:var(--accent)">📄</span><span>${p.license} license included</span></div>
+          <div class="trust-item"><span style="color:var(--accent)">⏱</span><span>~${p.setupTime} estimated setup</span></div>
         </div>
         <div class="divider"></div>
         <div style="text-align:center;font-size:.73rem;color:var(--muted);line-height:1.6">🔒 Secured by Razorpay · UPI · Cards · NetBanking · Wallets</div>
@@ -1200,42 +1652,70 @@ function openDetail(id) {
 }
 
 function switchTab(btn, tabId) {
-  btn.closest('.p-card, div')?.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
+  btn.setAttribute('aria-selected','true');
   const el = document.getElementById('tab-'+tabId);
   if(el) el.classList.add('active');
 }
 
-// ===== PAYMENT (Razorpay) =====
+// ===== PURCHASE HISTORY =====
+function showPurchaseHistory() {
+  document.getElementById('acctDropdown').classList.remove('open');
+  const list = document.getElementById('phList');
+  if(!purchases.length) {
+    list.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--muted)"><div style="font-size:3rem;margin-bottom:.75rem">📦</div><p>No purchases yet.</p><button class="btn-primary" style="margin-top:1rem" onclick="closePHModal();showPage('projects')">Browse Projects</button></div>`;
+  } else {
+    list.innerHTML = purchases.map(id => {
+      const p = PROJECTS.find(pr=>pr.id===id);
+      if(!p) return '';
+      return `<div class="ph-item">
+        <div class="ph-emoji">${p.emoji}</div>
+        <div class="ph-info"><div class="ph-title">${p.title}</div><div class="ph-meta">${p.category} · ${p.technology.split('+')[0].trim()} · ₹${p.price.toLocaleString('en-IN')}</div></div>
+        <button class="ph-dl-btn" onclick="showToast('Download link sent to your email! 📧','📥')">⬇ Download</button>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('phModal').classList.add('open');
+}
+
+function closePHModal() { document.getElementById('phModal').classList.remove('open'); }
+
+// ===== PAYMENT =====
 function buyProject(id) {
   const p = PROJECTS.find(pr=>pr.id===id);
   if(!p) return;
   if(typeof Razorpay !== 'undefined') {
     const options = {
-      key: 'rzp_test_YOUR_KEY_HERE', // Replace with your key
+      key: 'rzp_test_YOUR_KEY_HERE',
       amount: p.price * 100,
       currency: 'INR',
       name: 'ProjectStore',
       description: p.title,
       handler: () => paymentSuccess(p),
-      prefill: {name:'',email:'',contact:''},
-      notes: {project_id: p.id, project_slug: p.slug},
-      theme: {color:'#7B6EF6'}
+      prefill:{name:'',email:'',contact:''},
+      notes:{project_id:p.id,project_slug:p.slug},
+      theme:{color:'#7B6EF6'}
     };
     new Razorpay(options).open();
   } else {
     showModal('⚡','Payment Demo Mode',
       `In production, Razorpay checkout opens here for ₹${p.price.toLocaleString('en-IN')}. After payment, you get instant download access to "${p.title}".`,
-      '⬇️ Simulate Download', () => { showToast('📧 Download link sent to your email!','✅'); openWhatsApp('Hello ProjectStore, I just purchased: '+p.title+'. Please send me the download link.'); });
+      '⬇️ Simulate Purchase', () => { recordPurchase(p); openWhatsApp('Hello ProjectStore, I just purchased: '+p.title+'. Please send me the download link.'); });
   }
 }
 
+function recordPurchase(p) {
+  if(!purchases.includes(p.id)) { purchases.push(p.id); localStorage.setItem('ps_purchases',JSON.stringify(purchases)); }
+  showToast('Purchase recorded! Check history.','📦');
+}
+
 function paymentSuccess(p) {
+  recordPurchase(p);
   showModal('🎉','Payment Successful!',
-    `Thank you for purchasing "${p.title}"! Your download link has been sent to your email. Click below to download now.`,
-    '⬇️ Download Project', () => showToast('Download started! Check your downloads folder.','📥'));
+    `Thank you for purchasing "${p.title}"! Your download link has been sent to your email.`,
+    '⬇️ Download Project', () => showToast('Download started!','📥'));
 }
 
 // ===== WHATSAPP =====
@@ -1247,7 +1727,7 @@ function openWhatsApp(msg) {
 function inquireProject(id) {
   const p = PROJECTS.find(pr=>pr.id===id);
   if(!p) return;
-  const msg = `Hello ProjectStore,\n\nI am interested in purchasing:\n\n📌 *${p.title}*\n💰 Price: ₹${p.price.toLocaleString('en-IN')}\n⚙️ Tech: ${p.technology}\n🏷️ Category: ${p.category}\n\nCould you please provide more details, a demo, or any customization options?\n\nThank you!`;
+  const msg = `Hello ProjectStore,\n\nI am interested in purchasing:\n\n📌 *${p.title}*\n💰 Price: ₹${p.price.toLocaleString('en-IN')}\n⚙️ Tech: ${p.technology}\n🏷️ Category: ${p.category}\n\nCould you please provide more details or a demo?\n\nThank you!`;
   openWhatsApp(msg);
 }
 
@@ -1262,10 +1742,10 @@ function submitCustomForm() {
   const priority = document.getElementById('cf-priority').value;
   const desc = document.getElementById('cf-desc').value.trim();
   const wa = document.getElementById('cf-wa').value.trim();
-  if(!name){showToast('Please enter your name ⚠️','⚠️');return;}
-  if(!email||!email.includes('@')){showToast('Please enter a valid email ⚠️','⚠️');return;}
-  if(!title){showToast('Please enter a project title ⚠️','⚠️');return;}
-  if(!desc||desc.length<20){showToast('Please describe your project in detail ⚠️','⚠️');return;}
+  if(!name){showToast('Please enter your name','⚠️');return;}
+  if(!email||!email.includes('@')){showToast('Please enter a valid email','⚠️');return;}
+  if(!title){showToast('Please enter a project title','⚠️');return;}
+  if(!desc||desc.length<20){showToast('Please describe your project in detail','⚠️');return;}
   const msg = `Hello ProjectStore,\n\nI need a *Custom Project Built*.\n\n👤 *Name:* ${name}\n📧 *Email:* ${email}${wa?'\n📱 *WhatsApp:* '+wa:''}\n\n📌 *Project Title:* ${title}\n⚙️ *Technology:* ${tech}\n💰 *Budget:* ${budget}\n📅 *Deadline:* ${deadline||'Flexible'}\n🚀 *Priority:* ${priority}\n\n📝 *Description:*\n${desc}\n\nPlease send me a free quote!`;
   showModal('🚀','Request Ready!',
     "Your custom project request has been prepared. Click below to send it directly to our team on WhatsApp — we'll respond with a free quote within 2 hours.",
@@ -1277,8 +1757,8 @@ function submitContact() {
   const name = document.getElementById('cnt-name')?.value?.trim();
   const email = document.getElementById('cnt-email')?.value?.trim();
   const msg = document.getElementById('cnt-msg')?.value?.trim();
-  if(!name||!email||!msg){showToast('Please fill all fields ⚠️','⚠️');return;}
-  showToast('Message sent! We\'ll reply within 4 hours. ✅','✅');
+  if(!name||!email||!msg){showToast('Please fill all required fields','⚠️');return;}
+  showToast("Message sent! We'll reply within 4 hours.",'✅');
 }
 
 // ===== MODAL =====
@@ -1290,15 +1770,18 @@ function showModal(icon, title, desc, btn1Text, btn1Action) {
   b1.textContent = btn1Text;
   b1.onclick = () => { closeModal(); if(btn1Action) btn1Action(); };
   document.getElementById('modal').classList.add('open');
+  document.getElementById('modal').querySelector('.modal').focus?.();
 }
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function modalOverlayClick(e) { if(e.target.id === 'modal') closeModal(); }
 
-function modalOverlayClick(e) {
-  if(e.target === document.getElementById('modal')) closeModal();
+// ===== SHORTCUTS MODAL =====
+function showShortcutsModal() {
+  document.getElementById('shortcutsModal').classList.add('open');
+  document.getElementById('acctDropdown').classList.remove('open');
 }
+function closeShortcutsModal() { document.getElementById('shortcutsModal').classList.remove('open'); }
 
 // ===== TOAST =====
 function showToast(msg, icon='✅') {
@@ -1317,9 +1800,10 @@ function toggleFaq(el) {
   const isOpen = item.classList.contains('open');
   document.querySelectorAll('.faq-item').forEach(i => {
     i.classList.remove('open');
-    i.querySelector('.faq-a').classList.remove('open');
+    const a = i.querySelector('.faq-a'); if(a) a.classList.remove('open');
+    const q = i.querySelector('.faq-q'); if(q) q.setAttribute('aria-expanded','false');
   });
-  if(!isOpen) { item.classList.add('open'); ans.classList.add('open'); }
+  if(!isOpen) { item.classList.add('open'); ans.classList.add('open'); el.setAttribute('aria-expanded','true'); }
 }
 
 // ===== ANIMATED COUNTERS =====
@@ -1327,15 +1811,14 @@ function animateCounters() {
   document.querySelectorAll('[data-count]').forEach(el => {
     const target = +el.getAttribute('data-count');
     const suffix = el.getAttribute('data-suffix') || '';
-    let start = 0;
+    let startTime = null;
     const duration = 1400;
-    const startTime = performance.now();
-    function update(now) {
-      const elapsed = now - startTime;
+    function update(ts) {
+      if(!startTime) startTime = ts;
+      const elapsed = ts - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const current = Math.round(eased * target);
-      el.textContent = current.toLocaleString('en-IN') + suffix;
+      const eased = 1 - Math.pow(1-progress,3);
+      el.textContent = Math.round(eased*target).toLocaleString('en-IN') + suffix;
       if(progress < 1) requestAnimationFrame(update);
     }
     requestAnimationFrame(update);
@@ -1350,19 +1833,51 @@ function initReveal() {
   document.querySelectorAll('.reveal:not(.in)').forEach(el => obs.observe(el));
 }
 
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', e => {
+  const tag = document.activeElement.tagName;
+  const isInput = ['INPUT','TEXTAREA','SELECT'].includes(tag);
+  if(e.key === 'Escape') {
+    closeModal();
+    closeShortcutsModal();
+    closePHModal();
+    document.getElementById('compareModal').classList.remove('open');
+    document.getElementById('acctDropdown').classList.remove('open');
+    return;
+  }
+  if(isInput) return;
+  switch(e.key) {
+    case '/': e.preventDefault(); document.getElementById('searchInput')?.focus(); break;
+    case 'h': case 'H': showPage('home'); break;
+    case 'p': case 'P': showPage('projects'); break;
+    case 'w': case 'W': showPage('wishlist'); break;
+    case 't': case 'T': toggleTheme(); break;
+    case 'a': case 'A': toggleAcctDropdown(); break;
+    case 'c': case 'C': showPage('custom'); break;
+    case '?': showShortcutsModal(); break;
+  }
+});
+
 // ===== INIT =====
 renderFeatured();
+updateWLBadge();
 setTimeout(animateCounters, 300);
 initReveal();
 
-// Re-run reveal on page changes
-const pageObs = new MutationObserver(() => { setTimeout(initReveal, 50); });
+const pageObs = new MutationObserver(() => setTimeout(initReveal, 50));
 pageObs.observe(document.body, {subtree:true, attributeFilter:['class']});
 
-// Load Razorpay script
 const rz = document.createElement('script');
 rz.src = 'https://checkout.razorpay.com/v1/checkout.js';
 document.head.appendChild(rz);
+
+// PWA Service Worker registration
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // SW would be registered here in production
+    // navigator.serviceWorker.register('/sw.js');
+  });
+}
 </script>
 </body>
 </html>
